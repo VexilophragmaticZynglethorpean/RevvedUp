@@ -1,3 +1,4 @@
+#include <glad/gl.h>
 #include <Components/Cube.h>
 #include <Core/Graphics.h>
 #include <array>
@@ -52,34 +53,53 @@ static std::array<std::size_t, 14> cubeIndices = {
     FRONT | TOP | LEFT,
 };
 
+/*static std::array<std::size_t, 36> cubeIndices = {*/
+/*    0, 1, 2, 2, 1, 3, // Back face*/
+/*    4, 5, 6, 6, 5, 7, // Front face*/
+/*    0, 2, 4, 4, 2, 6, // Left face*/
+/*    1, 3, 5, 5, 3, 7, // Right face*/
+/*    0, 1, 4, 4, 5, 1, // Bottom face*/
+/*    2, 6, 3, 3, 6, 7  // Top face*/
+/*};*/
 
 Cube::Cube() :
-        verticesArray(sf::TriangleStrip, cubeIndices.size()),
-        texture(nullptr),
+        verticesArray(cubeIndices.size()),
+        buffer(sf::TriangleStrip),
         Transformable3D()
 {}
 
-void Cube::init(
-        std::shared_ptr <sf::RenderTarget> window,
-        std::shared_ptr <const sf::Texture> textureAtlas,
-        bool viewedFromOutside
-) {
-        texture = textureAtlas;
-
+void Cube::init (bool viewedFromOutside) {
         if (!viewedFromOutside)
                 std::reverse(cubeIndices.begin(), cubeIndices.end());
 
+        size_t i = 0;
         for (const size_t index : cubeIndices) {
-                verticesArray.append( Graphics::Vertex3D(
-                        window,
+                verticesArray.at(i++) = Graphics::Vertex3D(
                         cubeVertices.at(index),
-                        textureAtlas,
                         cubeTextureCoords.at(index)
-                ));
+                );
         }
+
+        buffer.create(cubeIndices.size());
+        buffer.update(verticesArray.data());
 }
 
 void Cube::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-        states.texture = texture.get();
-        target.draw(verticesArray, states);
+        sf::Shader::bind(states.shader);
+        sf::Texture::bind(states.texture);
+        sf::VertexBuffer::bind(&buffer);
+
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(sf::Vertex), (void*)offsetof(sf::Vertex, position)); // Position
+        glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(sf::Vertex), (void*)offsetof(sf::Vertex, color)); // Color
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(sf::Vertex), (void*)offsetof(sf::Vertex, texCoords)); // Texture Coordinates
+
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, cubeIndices.size());
+
+        sf::VertexBuffer::bind(NULL);
+        sf::Texture::bind(NULL);
+        sf::Shader::bind(NULL);
 }

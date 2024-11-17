@@ -3,25 +3,17 @@
 
 #include <SFML/Graphics.hpp>
 #include <Components/Transformable3D.h>
-#include <memory>
 
 class Cube : public sf::Drawable, public Transformable3D {
 private:
-	sf::VertexArray verticesArray;
-	std::shared_ptr<const sf::Texture> texture;
+	std::vector<sf::Vertex> verticesArray;
+        sf::VertexBuffer buffer;
 
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 public:
 	Cube();
 
-	void init(
-		std::shared_ptr <sf::RenderTarget> window,
-		std::shared_ptr<const sf::Texture> textureAtlas,
-		bool viewedFromOutside
-	);
-
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-	
+	void init(bool viewedFromOutside = true);
 };
 
 #endif // CUBE_H

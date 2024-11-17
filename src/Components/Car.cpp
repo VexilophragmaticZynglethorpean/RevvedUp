@@ -1,4 +1,6 @@
 #include <Components/Car.h>
+#include <Core/Global.h>
+
 #include <algorithm>
 
 #ifdef DEV_PHASE
@@ -52,22 +54,22 @@ void Car::handleEvents(const sf::Event& event) {
         rightMovement = D_Right ? pressed : rightMovement;
 }
 
-void Car::init(std::shared_ptr<const sf::Texture> textureAtlas) {
+void Car::init() {
         animation[TOP_LEFT] = sf::IntRect(263, 59, 242, 174);
         animation[TOP] = sf::IntRect(565, 39, 148, 206);
         animation[TOP_RIGHT] = sf::IntRect(773, 53, 252, 184);
 
         sprite.setPosition(500, 500);
 
-        sprite.setTexture(*textureAtlas);
+        sprite.setTexture(Global::getTexture());
         sprite.setTextureRect(animation[TOP]);
 
         auto spriteBounds = sprite.getLocalBounds();
         sprite.setOrigin(spriteBounds.width/2, spriteBounds.height);
 }
 
-void Car::update(std::shared_ptr <const sf::RenderWindow> window, const sf::Time& deltaTime) {
-        calcPosition(window, deltaTime);
+void Car::update(const sf::Time& deltaTime) {
+        calcPosition(deltaTime);
 }
 
 void Car::calcAcceleration() {
@@ -100,7 +102,7 @@ void Car::calcVelocity(const sf::Time& deltaTime) {
                                 0.0f;
 }
 
-void Car::calcPosition(std::shared_ptr <const sf::RenderWindow> window, const sf::Time& deltaTime) {
+void Car::calcPosition(const sf::Time& deltaTime) {
         calcVelocity(deltaTime);
 
         float dt = deltaTime.asSeconds();
@@ -108,8 +110,10 @@ void Car::calcPosition(std::shared_ptr <const sf::RenderWindow> window, const sf
         float yOffset = forwardVelocity * dt;
         float xOffset = rightVelocity * dt;
 
+        auto windowSize = Global::getWindow().getSize();
+
         sf::Vector2f spriteOldPosition = sprite.getPosition();
-        sf::FloatRect windowBounds(0, 0, window->getSize().x, window->getSize().y);
+        sf::FloatRect windowBounds(0, 0, windowSize.x, windowSize.y);
 
         sprite.move(xOffset, -yOffset);
         

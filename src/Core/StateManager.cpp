@@ -10,10 +10,10 @@ StateID StateManager::getCurrentStateID() const {
         return states.top()->getID();
 }
 
-void StateManager::pushState(std::shared_ptr <sf::RenderWindow> window, std::unique_ptr<State> state) {
+void StateManager::pushState(std::unique_ptr<State> state) {
         if(state == nullptr) return;
         states.push(std::move(state));
-        states.top()->init(window);
+        states.top()->init();
 }
 
 void StateManager::popState() {
@@ -23,14 +23,14 @@ void StateManager::popState() {
         }
 }
 
-void StateManager::update(std::shared_ptr <const sf::RenderWindow> window, const sf::Time& deltaTime) {
+void StateManager::update(const sf::Time& deltaTime) {
         if (!states.empty()) {
-                states.top()->update(window, deltaTime);
+                states.top()->update(deltaTime);
         }
 }
 
-void StateManager::render(std::shared_ptr <sf::RenderTarget> window) {
+void StateManager::render() {
         if (!states.empty()) {
-                states.top()->render(window);
+                states.top()->render();
         }
 }

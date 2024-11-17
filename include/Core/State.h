@@ -3,7 +3,6 @@
 
 #include <SFML/Graphics.hpp>
 #include <Core/StateID.h>
-#include <memory>
 
 class State {
 protected:
@@ -15,9 +14,9 @@ public:
 		return id;
 	}
 	
-	virtual void init(std::shared_ptr <sf::RenderWindow> window) = 0;
-	virtual void update(std::shared_ptr <const sf::RenderWindow> window, const sf::Time& deltaTime) = 0;
-	virtual void render(std::shared_ptr <sf::RenderTarget> window) = 0;
+	virtual void init() = 0;
+	virtual void update(const sf::Time& deltaTime) = 0;
+	virtual void render() = 0;
 	
 	virtual void exit() = 0;
 };

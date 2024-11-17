@@ -18,10 +18,10 @@ public:
 	static StateManager& getInstance();
 
 	StateID getCurrentStateID() const;
-	void pushState(std::shared_ptr <sf::RenderWindow> window, std::unique_ptr<State> state);
+	void pushState(std::unique_ptr<State> state);
 	void popState();
 
-	void update(std::shared_ptr <const sf::RenderWindow> window, const sf::Time& deltaTime);
-	void render(std::shared_ptr <sf::RenderTarget> window);
+	void update(const sf::Time& deltaTime);
+	void render();
 };
 #endif // STATE_MANAGER_H

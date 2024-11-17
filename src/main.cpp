@@ -1,10 +1,11 @@
 #include <glad/gl.h>
 #include <SFML/Graphics.hpp>
 
+#include <Util/Path.h>
+#include <Core/Global.h>
+
 #include <Core/EventManager.h>
 #include <Core/StateManager.h>
-#include <Util/Path.h>
-
 #include <States/PlayState.h>
 
 #ifdef DEV_PHASE
@@ -13,57 +14,61 @@
 #endif
 
 int main() {
+    auto& window = Global::getWindow();
+    window.setVerticalSyncEnabled(true);
+
+    gladLoadGL(sf::Context::getFunction);
 
     #ifdef DEV_PHASE
-    auto window = std::make_shared <sf::RenderWindow>(sf::VideoMode(800, 600), "RevvedUp");
-    #else
-    auto window = std::make_shared <sf::RenderWindow>(sf::VideoMode(800, 600), "RevvedUp");
-    #endif
-
-    gladLoadGL(reinterpret_cast<GLADloadfunc>(sf::Context::getFunction));
-
-    #ifdef DEV_PHASE
-    assert(ImGui::SFML::Init(*window));
+    assert(ImGui::SFML::Init(window));
     #endif
 
 
-    StateManager& stateManager = StateManager::getInstance();
-    EventManager& eventManager = EventManager::getInstance();
+    auto& stateManager = StateManager::getInstance();
+    auto& eventManager = EventManager::getInstance();
     sf::Clock deltaClock;
 
-    stateManager.pushState(window, std::make_unique<PlayState>());
+    stateManager.pushState(std::make_unique<PlayState>());
 
-    while (window->isOpen()) {
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    while (window.isOpen()) {
 
         sf::Event event;
-        while(window->pollEvent(event)) {
+        while(window.pollEvent(event)) {
 
             #ifdef DEV_PHASE
-            ImGui::SFML::ProcessEvent(*window, event);
+            ImGui::SFML::ProcessEvent(window, event);
             #endif
 
             eventManager.handleEvent(stateManager.getCurrentStateID(), event);
 
-            if (event.type == sf::Event::Closed && window)
-                window->close();
+            if (event.type == sf::Event::Closed)
+                window.close();
         }
 
         #ifdef DEV_PHASE
-        ImGui::SFML::Update(*window, deltaClock.getElapsedTime());
+        ImGui::SFML::Update(window, deltaClock.getElapsedTime());
         #endif
 
-        stateManager.update(window, deltaClock.getElapsedTime());
+        stateManager.update(deltaClock.getElapsedTime());
         deltaClock.restart();
 
-        window->clear(sf::Color::White);
-
-        stateManager.render(window);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        stateManager.render();
 
         #ifdef DEV_PHASE
-        ImGui::SFML::Render(*window);
+        ImGui::Begin("hi");
+        ImGui::Text("adsas");
+        ImGui::End();
+        ImGui::SFML::Render(window);
         #endif
 
-        window->display();
+        window.display();
     }
 
     #ifdef DEV_PHASE
@@ -72,3 +77,4 @@ int main() {
 
     return EXIT_SUCCESS;
 }
+//delete from here

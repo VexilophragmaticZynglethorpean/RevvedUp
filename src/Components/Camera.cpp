@@ -1,4 +1,5 @@
 #include <Components/Camera.h>
+#include <Core/Global.h>
 
 Camera::Camera(
 	const glm::vec3& position,
@@ -36,15 +37,13 @@ void Camera::updateViewMatrix() {
 	view = glm::lookAt(position, target, up);
 }
 
-void Camera::updateProjectionMatrix(ProjectionType type, std::shared_ptr <sf::RenderTarget> target) {
+void Camera::updateProjectionMatrix(ProjectionType type) {
 
 	if (type == ProjectionType::Perspective) {
-		if (target == nullptr) {
-			throw std::invalid_argument("Perspective projection selected but render target not provided.");
-		}
 
+		auto windowSize = Global::getWindow().getSize();
 		float fov = glm::radians(45.0f);
-		float aspectRatio = 800.0f / 600.0f; // Example aspect ratio
+		float aspectRatio = static_cast<float>(windowSize.y) / static_cast<float>(windowSize.x);
 		float nearPlane = 0.1f;
 		float farPlane = 100.0f;
 

@@ -3,7 +3,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-#include <memory>
 #include <SFML/Graphics.hpp>
 
 enum class ProjectionType {
@@ -24,6 +23,7 @@ public:
 	void setProjection(const glm::mat4& newProjection);
 
 	glm::mat4 getVP() const;
+	void updateProjectionMatrix(ProjectionType type);
 
 private:
 	glm::vec3 position;
@@ -33,7 +33,6 @@ private:
 	glm::mat4 projection;
 
 	void updateViewMatrix();
-	void updateProjectionMatrix(ProjectionType type, std::shared_ptr <sf::RenderTarget> target = nullptr);
 };
 
 #endif // CAMERA_H

@@ -22,9 +22,7 @@ uint8_t convertToSFUint8(float z) {
 }
 
 sf::Vertex Graphics::Vertex3D(
-	const std::shared_ptr<const sf::RenderTarget> target,
 	const sf::Vector3f positionNDC,
-	const std::shared_ptr<const sf::Texture> texTarget,
 	const sf::Vector2f texNDC
 ) {
 	sf::Vertex vertex;
@@ -37,8 +35,8 @@ sf::Vertex Graphics::Vertex3D(
 	vertex.texCoords.x = texNDC.x;
 	vertex.texCoords.y = texNDC.y;
 
-	convertFromNDC(target->getSize(), vertex.position.x, vertex.position.y);
-	convertFromNDC(texTarget->getSize(), vertex.texCoords.x, vertex.texCoords.y);
+	convertFromNDC(Global::getWindow().getSize(), vertex.position.x, vertex.position.y);
+	convertFromNDC(Global::getTexture().getSize(), vertex.texCoords.x, vertex.texCoords.y);
 
 	return vertex;
 }
