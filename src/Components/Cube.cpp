@@ -85,6 +85,7 @@ void Cube::init (bool viewedFromOutside) {
 }
 
 void Cube::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+        Global::getWindow().setActive();
         sf::Shader::bind(states.shader);
         sf::Texture::bind(states.texture);
         sf::VertexBuffer::bind(&buffer);
@@ -102,4 +103,5 @@ void Cube::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         sf::VertexBuffer::bind(NULL);
         sf::Texture::bind(NULL);
         sf::Shader::bind(NULL);
+        Global::getWindow().setActive(false);
 }
