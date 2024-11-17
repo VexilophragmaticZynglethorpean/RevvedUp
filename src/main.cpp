@@ -1,50 +1,74 @@
+#include <glad/gl.h>
+#include <SFML/Graphics.hpp>
+
+#include <Core/EventManager.h>
+#include <Core/StateManager.h>
+#include <Util/Path.h>
+
+#include <States/PlayState.h>
+
+#ifdef DEV_PHASE
 #include <imgui.h>
 #include <imgui-SFML.h>
-
-#include <SFML/Graphics.hpp>
-#include <SFML/OpenGL.hpp>
+#endif
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Shader Example");
-    ImGui::SFML::Init(window);
 
-    sf::VertexArray triangle(sf::Triangles, 3);
-    triangle[0] = sf::Vertex(sf::Vector2f(400, 100), sf::Color::Red);
-    triangle[1] = sf::Vertex(sf::Vector2f(300, 500), sf::Color::Green);
-    triangle[2] = sf::Vertex(sf::Vector2f(500, 500), sf::Color::Blue);
+    #ifdef DEV_PHASE
+    auto window = std::make_shared <sf::RenderWindow>(sf::VideoMode(800, 600), "RevvedUp");
+    #else
+    auto window = std::make_shared <sf::RenderWindow>(sf::VideoMode(800, 600), "RevvedUp");
+    #endif
 
+    gladLoadGL(reinterpret_cast<GLADloadfunc>(sf::Context::getFunction));
+
+    #ifdef DEV_PHASE
+    assert(ImGui::SFML::Init(*window));
+    #endif
+
+
+    StateManager& stateManager = StateManager::getInstance();
+    EventManager& eventManager = EventManager::getInstance();
     sf::Clock deltaClock;
 
-    while (window.isOpen()) {
+    stateManager.pushState(window, std::make_unique<PlayState>());
+
+    while (window->isOpen()) {
 
         sf::Event event;
-        while(window.pollEvent(event)) {
+        while(window->pollEvent(event)) {
 
-            ImGui::SFML::ProcessEvent(window, event);
+            #ifdef DEV_PHASE
+            ImGui::SFML::ProcessEvent(*window, event);
+            #endif
 
-            switch (event.type) {
-            case sf::Event::Closed:
-                window.close();
-            default:
-                static int a = 2;
-            }
+            eventManager.handleEvent(stateManager.getCurrentStateID(), event);
+
+            if (event.type == sf::Event::Closed && window)
+                window->close();
         }
 
-        ImGui::SFML::Update(window, deltaClock.restart());
+        #ifdef DEV_PHASE
+        ImGui::SFML::Update(*window, deltaClock.getElapsedTime());
+        #endif
 
-        ImGui::ShowDemoWindow();
+        stateManager.update(window, deltaClock.getElapsedTime());
+        deltaClock.restart();
 
-        ImGui::Begin("Hello, world!");
-        ImGui::Button("Look at this pretty button");
-        ImGui::End();
+        window->clear(sf::Color::White);
 
-        window.clear();
-        window.draw(triangle);
-        ImGui::SFML::Render(window);
-        window.display();
+        stateManager.render(window);
+
+        #ifdef DEV_PHASE
+        ImGui::SFML::Render(*window);
+        #endif
+
+        window->display();
     }
 
+    #ifdef DEV_PHASE
     ImGui::SFML::Shutdown();
+    #endif
 
-    return 0;
+    return EXIT_SUCCESS;
 }
