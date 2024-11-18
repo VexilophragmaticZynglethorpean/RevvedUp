@@ -9,5 +9,5 @@ uniform mat4 ModelViewProjection;
 
 void main()
 {
-    gl_Position = ModelViewProjection * vec4(position, 1.0);
+    gl_Position = ModelViewProjection * vec4(position.xy, 0.0, 1.0);
 }

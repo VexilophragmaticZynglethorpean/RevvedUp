@@ -1,4 +1,5 @@
 #include <3DExtensions/VertexBuffer3D.h>
+#include <GL/gl.h>
 
 GLenum usageToGlEnum(VertexBuffer3D::Usage usage) {
     switch (usage) {
@@ -12,35 +13,44 @@ GLenum usageToGlEnum(VertexBuffer3D::Usage usage) {
 }
 
 VertexBuffer3D::VertexBuffer3D(sf::PrimitiveType type, Usage usage) 
-	: type(type), usage(usage), vbo(0), vao(0) {
+	: type(type), usage(usage), ebo(0), vbo(0), vao(0) {
 }
 
 VertexBuffer3D::~VertexBuffer3D() {
 	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &ebo);
 	glDeleteVertexArrays(1, &vao);
 }
 
-void VertexBuffer3D::update(const std::vector<Vertex3D>& vertex) {
+void VertexBuffer3D::update(const std::vector<Vertex3D>& vertices, const std::vector<GLuint>& indices) {
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex3D), vertex.data(), usageToGlEnum(usage));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), vertices.data(), usageToGlEnum(usage));
 
-	glBindVertexArray(vao);
+	if(vertices.size() != 0) {
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), usageToGlEnum(usage));
+	}
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat), (void*)offsetof(Vertex3D, position));
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat), (void*)offsetof(Vertex3D, texCoords));
+
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, position));
-
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, texCoords));
-
+	glBindVertexArray(0);
 }
 
 void VertexBuffer3D::create() {
 	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &ebo);
 	glGenVertexArrays(1, &vao);
 }
 
 void VertexBuffer3D::bind() const {
 	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 }
 
 sf::PrimitiveType VertexBuffer3D::getPrimitiveType() const {

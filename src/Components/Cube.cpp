@@ -1,98 +1,37 @@
-#include "SFML/Graphics/PrimitiveType.hpp"
 #include <glad/gl.h>
 #include <Components/Cube.h>
 #include <Core/Graphics.h>
-/*#include <array>*/
-
-/*static std::array<sf::Vector3f, 8> cubeVertices = {{*/
-/*        sf::Vector3f( -0.5, -0.5, -0.5 ),*/
-/*        sf::Vector3f( +0.5, -0.5, -0.5 ),*/
-/*        sf::Vector3f( -0.5, +0.5, -0.5 ),*/
-/*        sf::Vector3f( +0.5, +0.5, -0.5 ),*/
-/*        sf::Vector3f( -0.5, -0.5, +0.5 ),*/
-/*        sf::Vector3f( +0.5, -0.5, +0.5 ),*/
-/*        sf::Vector3f( -0.5, +0.5, +0.5 ),*/
-/*        sf::Vector3f( +0.5, +0.5, +0.5 ),*/
-/*}};*/
-/**/
-/*static std::array<sf::Vector2f, 8> cubeTextureCoords = {{*/
-/*        sf::Vector2f( 0, 0 ),*/
-/*        sf::Vector2f( 0, 0 ),*/
-/*        sf::Vector2f( 0, 0 ),*/
-/*        sf::Vector2f( 0, 0 ),*/
-/*        sf::Vector2f( 0, 0 ),*/
-/*        sf::Vector2f( 0, 0 ),*/
-/*        sf::Vector2f( 0, 0 ),*/
-/*        sf::Vector2f( 0, 0 ),*/
-/*}};*/
-/**/
-/*enum cubeIndex {*/
-/*        BACK = 0b000, */
-/*        FRONT = 0b100,*/
-/**/
-/*        BOTTOM = 0b000, */
-/*        TOP = 0b010,*/
-/**/
-/*        LEFT = 0b000, */
-/*        RIGHT = 0b001*/
-/*};*/
-/**/
-/*static std::array<std::size_t, 14> cubeIndices = {*/
-/*    BACK | TOP | RIGHT,*/
-/*    BACK | TOP | LEFT,*/
-/*    BACK | BOTTOM | RIGHT,*/
-/*    BACK | BOTTOM | LEFT,*/
-/*    FRONT | BOTTOM | LEFT,*/
-/*    BACK | TOP | LEFT,*/
-/*    FRONT | TOP | LEFT,*/
-/*    BACK | TOP | RIGHT,*/
-/*    FRONT | TOP | RIGHT,*/
-/*    BACK | BOTTOM | RIGHT,*/
-/*    FRONT | BOTTOM | RIGHT,*/
-/*    FRONT | BOTTOM | LEFT,*/
-/*    FRONT | TOP | RIGHT,*/
-/*    FRONT | TOP | LEFT,*/
-/*};*/
-
-/*static std::array<std::size_t, 36> cubeIndices = {*/
-/*    0, 1, 2, 2, 1, 3, // Back face*/
-/*    4, 5, 6, 6, 5, 7, // Front face*/
-/*    0, 2, 4, 4, 2, 6, // Left face*/
-/*    1, 3, 5, 5, 3, 7, // Right face*/
-/*    0, 1, 4, 4, 5, 1, // Bottom face*/
-/*    2, 6, 3, 3, 6, 7  // Top face*/
-/*};*/
 
 Cube::Cube() :
-        verticesArray(8),
-        /*verticesArray(cubeIndices.size()),*/
+        vertices(8),
+        indices(8),
         buffer(sf::PrimitiveType::Points),
         Transformable3D()
 {}
 
-void Cube::init (bool viewedFromOutside) {
-        /*if (!viewedFromOutside)*/
-        /*        std::reverse(cubeIndices.begin(), cubeIndices.end());*/
-        /**/
-        /*size_t i = 0;*/
-        /*for (const size_t index : cubeIndices) {*/
-        /*        verticesArray.at(i++) = Vertex3D(*/
-        /*                cubeVertices.at(index),*/
-        /*                cubeTextureCoords.at(index)*/
-        /*        );*/
-        /*}*/
+void Cube::init () {
+        float size = 1.0f; // Size of the cube
+        vertices.push_back(Vertex3D(sf::Vector3f(-size, -size, -size), sf::Vector2f(0, 0))); // Vertex 0
+        vertices.push_back(Vertex3D(sf::Vector3f(size, -size, -size), sf::Vector2f(1, 0)));  // Vertex 1
+        vertices.push_back(Vertex3D(sf::Vector3f(size, size, -size), sf::Vector2f(1, 1)));   // Vertex 2
+        vertices.push_back(Vertex3D(sf::Vector3f(-size, size, -size), sf::Vector2f(0, 1)));  // Vertex 3
+        vertices.push_back(Vertex3D(sf::Vector3f(-size, -size, size), sf::Vector2f(0, 0)));   // Vertex 4
+        vertices.push_back(Vertex3D(sf::Vector3f(size, -size, size), sf::Vector2f(1, 0)));    // Vertex 5
+        vertices.push_back(Vertex3D(sf::Vector3f(size, size, size), sf::Vector2f(1, 1)));     // Vertex 6
+        vertices.push_back(Vertex3D(sf::Vector3f(-size, size, size), sf::Vector2f(0, 1)));    // Vertex 7
 
-	verticesArray.emplace_back(sf::Vector3f(-0.45f,  0.45f, -0.45f), sf::Vector2f(0.0f, 0.0f));
-	verticesArray.emplace_back(sf::Vector3f( 0.45f,  0.45f, -0.45f), sf::Vector2f(1.0f, 0.0f));
-	verticesArray.emplace_back(sf::Vector3f( 0.45f, -0.45f, -0.45f), sf::Vector2f(1.0f, 1.0f));
-	verticesArray.emplace_back(sf::Vector3f(-0.45f, -0.45f, -0.45f), sf::Vector2f(0.0f, 1.0f));
-	verticesArray.emplace_back(sf::Vector3f(-0.45f,  0.45f,  0.45f), sf::Vector2f(0.0f, 0.0f));
-	verticesArray.emplace_back(sf::Vector3f( 0.45f,  0.45f,  0.45f), sf::Vector2f(1.0f, 0.0f));
-	verticesArray.emplace_back(sf::Vector3f( 0.45f, -0.45f,  0.45f), sf::Vector2f(1.0f, 1.0f));
-	verticesArray.emplace_back(sf::Vector3f(-0.45f, -0.45f,  0.45f), sf::Vector2f(0.0f, 1.0f));
+        // Define the indices for the cube (two triangles per face)
+        indices = {
+        0, 1, 2, 0, 2, 3, // Back face
+        4, 5, 6, 4, 6, 7, // Front face
+        0, 1, 5, 0, 5, 4, // Bottom face
+        3, 2, 6, 3, 6, 7, // Top face
+        0, 3, 7, 0, 7, 4, // Left face
+        1, 2, 6, 1, 6, 5  // Right face
+        };
 
         buffer.create();
-        buffer.update(verticesArray);
+        buffer.update(vertices, indices);
 }
 
 void Cube::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -100,7 +39,9 @@ void Cube::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         sf::Texture::bind(states.texture);
         sf::Shader::bind(states.shader);
 
-        /*glDrawArrays(GL_TRIANGLE_STRIP, 0, cubeIndices.size());*/
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
-        glDrawArrays(GL_POINTS, 0, 8);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindVertexArray(0);
+        glUseProgram(0);
 }

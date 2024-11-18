@@ -6,7 +6,6 @@
 class Car : public sf::Drawable {
 private:
 	sf::Sprite sprite;
-	std::vector<sf::IntRect> animation;
 
 	float forwardVelocity;
 	float rightVelocity;
@@ -24,7 +23,6 @@ private:
 	void calcPosition(const sf::Time& deltaTime);
 
 	void restrainToBoundaries(const sf::Vector2f oldPosition, const sf::FloatRect boundary);
-	void changeOrientation();
 
 public:
 	Car();

@@ -22,3 +22,8 @@ sf::Shader& Global::getShader() {
 	static sf::Shader shader;
 	return shader;
 }
+
+sf::Clock& Global::getClock() {
+	static sf::Clock clock;
+	return clock;
+}

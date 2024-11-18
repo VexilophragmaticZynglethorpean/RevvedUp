@@ -1,4 +1,3 @@
-#include "SFML/Graphics/RenderStates.hpp"
 #include <glad/gl.h>
 #include <Core/Global.h>
 #include <Util/Path.h>
@@ -21,22 +20,20 @@ PlayState::PlayState() : car(), cube(), camera() {
 }
 
 void PlayState::init() {
-    auto t_start = std::chrono::high_resolution_clock::now();
-
     auto assetsDir = Util::getExecutablePath() / "assets";
     auto shadersDir = Util::getExecutablePath() / "shaders";
 
     auto& textureAtlas = Global::getTexture();
-    textureAtlas.loadFromFile(assetsDir / "red.jpg");
+    textureAtlas.loadFromFile(assetsDir / "jeep.png");
     textureAtlas.setSmooth(true);
 
     auto& shader = Global::getShader();
     shader.loadFromFile(
-        shadersDir / "cube.vert",
-        shadersDir / "cube.geo",
-        shadersDir / "cube.frag"
+        shadersDir / "default.vert",
+        shadersDir / "default.frag"
     );
     shader.setUniform("texture", textureAtlas);
+    sf::Shader::bind(&shader);
 
     camera.setPosition(glm::vec3(0.0f, 0.0f, 0.0f))
           .setTarget(glm::vec3(1.5f, 1.5f, 2.0f))
@@ -47,8 +44,8 @@ void PlayState::init() {
           .setAspectRatio()
           .update();
 
-    /*car.init();*/
-    cube.init(true);
+    cube.init();
+    car.init();
 
     EventManager& eventManager = EventManager::getInstance();
 
@@ -78,53 +75,50 @@ void PlayState::init() {
 }
 
 void PlayState::update(const sf::Time& deltaTime) {
-    /*car.update(deltaTime);*/
-
-    auto t_now = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
+    car.update(deltaTime);
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::rotate(
         model,
-        0.25f * time * glm::radians(180.0f),
+        0.25f * Global::getClock().getElapsedTime().asSeconds() * glm::radians(180.0f),
         glm::vec3(0.0f, 0.0f, 1.0f)
     );
 
-    /*glm::mat4 mvp = camera.getVP() * cube.getTransform();*/
-    glm::mat4 mvp = camera.getVP() * model;
+    glm::mat4 view = glm::lookAt(
+        glm::vec3(1.5f, 1.5f, 2.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 0.0f, 1.0f)
+    );
+    glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 10.0f);
 
-    auto mvp_ptr = glm::value_ptr(mvp);
+    auto mvp_ptr = glm::value_ptr(proj * view * model);
     auto& shader = Global::getShader();
     shader.setUniform("ModelViewProjection", sf::Glsl::Mat4(mvp_ptr));
-
 }
 
 void PlayState::render() {
-    /*window->draw(car);*/
-
-    #ifdef DEV_PHASE
-    ImGui::Begin("Camera Controls");
-    static float x = 0.0f;
-    static float y = 0.0f;
-    static float z = 0.0f;
-    ImGui::DragFloat("x", &x);
-    ImGui::DragFloat("y", &y);
-    ImGui::DragFloat("z", &z);
-    camera.setPosition(glm::vec3(x, y, z));
-    ImGui::End();
-    #endif
 
     sf::RenderStates renderStates;
     renderStates.shader = &Global::getShader();
     renderStates.texture = &Global::getTexture();
 
-    Global::getWindow().draw(cube, renderStates);
+    auto& window = Global::getWindow();
+
+    /*window.draw(cube, renderStates);*/
+
+    window.pushGLStates();
+    window.resetGLStates();
+
+    sf::CircleShape circle(200);
+    circle.setFillColor(sf::Color::Red);
+    window.draw(circle);
+    window.draw(car);
+
+    window.popGLStates();     
 }
 
 void PlayState::resize() {
-    Global::getWindow().setActive();
     glViewport(0, 0, Global::getWindow().getSize().x, Global::getWindow().getSize().y);
-    Global::getWindow().setActive(false);
 
     camera.updateProjectionMatrix();
 }

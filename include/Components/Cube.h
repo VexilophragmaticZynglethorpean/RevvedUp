@@ -7,14 +7,16 @@
 
 class Cube : public sf::Drawable, public Transformable3D {
 private:
-	std::vector<Vertex3D> verticesArray;
+	std::vector<Vertex3D> vertices;
+	std::vector<GLuint> indices;
+
         VertexBuffer3D buffer;
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 public:
 	Cube();
 
-	void init(bool viewedFromOutside = true);
+	void init();
 };
 
 #endif // CUBE_H

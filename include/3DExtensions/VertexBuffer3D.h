@@ -13,7 +13,7 @@ public:
 	~VertexBuffer3D();
 
 	void create();
-	void update(const std::vector<Vertex3D>& vertex);
+	void update(const std::vector<Vertex3D>& vertices, const std::vector<GLuint>& indices);
 	void bind() const;
 
 	sf::PrimitiveType getPrimitiveType() const;
@@ -23,6 +23,7 @@ private:
 	sf::PrimitiveType type;
 	Usage usage;
 	GLuint vbo;
+	GLuint ebo;
 	GLuint vao;
 };
 
