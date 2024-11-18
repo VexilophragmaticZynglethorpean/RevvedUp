@@ -1,4 +1,4 @@
-#include <Components/Transformable3D.h>
+#include <3DExtensions/Transformable3D.h>
 
 Transformable3D::Transformable3D()
 	: m_position(0.0f), m_origin(0.0f), m_scale(1.0f),

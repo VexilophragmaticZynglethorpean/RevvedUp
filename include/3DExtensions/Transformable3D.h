@@ -1,5 +1,5 @@
-#ifndef TRANSFORMABLE3D_H
-#define TRANSFORMABLE3D_H
+#ifndef TRANSFORMABLE_3D_H
+#define TRANSFORMABLE_3D_H
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
@@ -45,5 +45,5 @@ private:
 	void updateTransform() const;
 };
 
-#endif // TRANSFORMABLE3D_H
+#endif // TRANSFORMABLE_3D_H
 

@@ -6,27 +6,55 @@ Camera::Camera(
 	const glm::vec3& target,
 	const glm::vec3& up,
 	ProjectionType type
-) : position(position), target(target), up(up), projection(glm::mat4(1.0f)) {
-	updateViewMatrix();
-}
+) : position(position), target(target), up(up), projection(glm::mat4(1.0f)) {}
 
-void Camera::setPosition(const glm::vec3& newPosition) {
+Camera& Camera::setPosition(const glm::vec3& newPosition) {
 	position = newPosition;
-	updateViewMatrix();
+	return *this;
 }
 
-void Camera::setTarget(const glm::vec3& newTarget) {
+Camera& Camera::setTarget(const glm::vec3& newTarget) {
 	target = newTarget;
-	updateViewMatrix();
+	return *this;
 }
 
-void Camera::setUp(const glm::vec3& newUp) {
+Camera& Camera::setUp(const glm::vec3& newUp) {
 	up = newUp;
-	updateViewMatrix();
+	return *this;
 }
 
-void Camera::setProjection(const glm::mat4& newProjection) {
-	projection = newProjection;
+Camera& Camera::setFOV(float newFOV) {
+	fov = newFOV;
+	return *this;
+}
+
+Camera& Camera::setAspectRatio(float newAspect) {
+	if (aspect == 0.0f) {
+		auto size = Global::getWindow().getSize();
+		aspect = static_cast<float>(size.y) / static_cast<float>(size.x);
+	}
+
+	aspect = newAspect;
+	return *this;
+}
+
+Camera& Camera::setNearFar(float near, float far) {
+	nearPlane = near;
+	farPlane = far;
+	return *this;
+}
+
+Camera& Camera::setProjection(ProjectionType type) {
+	projectionType = type;
+	return *this;
+}
+
+void Camera::updateProjectionMatrix() {
+	if (projectionType == ProjectionType::Perspective) {
+		projection = glm::perspective(glm::radians(fov), aspect, nearPlane, farPlane);
+	} else {
+		projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, nearPlane, farPlane);
+	}
 }
 
 glm::mat4 Camera::getVP() const {
@@ -37,27 +65,7 @@ void Camera::updateViewMatrix() {
 	view = glm::lookAt(position, target, up);
 }
 
-void Camera::updateProjectionMatrix(ProjectionType type) {
-
-	if (type == ProjectionType::Perspective) {
-
-		auto windowSize = Global::getWindow().getSize();
-		float fov = glm::radians(45.0f);
-		float aspectRatio = static_cast<float>(windowSize.y) / static_cast<float>(windowSize.x);
-		float nearPlane = 0.1f;
-		float farPlane = 100.0f;
-
-		projection = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
-
-	} else if (type == ProjectionType::Orthographic) {
-
-		float left = -10.0f;
-		float right = 10.0f;
-		float bottom = -10.0f;
-		float top = 10.0f;
-		float nearPlane = -1.0f;
-		float farPlane = 1.0f;
-
-		projection = glm::ortho(left, right, bottom, top, nearPlane, farPlane);
-	}
+void Camera::update() {
+	updateViewMatrix();
+	updateProjectionMatrix();
 }

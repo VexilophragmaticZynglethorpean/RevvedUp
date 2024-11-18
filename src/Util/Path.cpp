@@ -27,5 +27,5 @@ std::filesystem::path Util::getExecutablePath() {
     path[count] = '\0';
 #endif
 
-    return std::filesystem::path(path);
+    return std::filesystem::path(path).parent_path();
 }
