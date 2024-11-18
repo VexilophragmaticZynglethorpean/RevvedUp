@@ -19,11 +19,7 @@ int main() {
 	auto& window = Global::getWindow();
 
 #ifdef DEV_PHASE
-	auto debugWindow = sf::RenderWindow(sf::VideoMode(100, 100), "Debug");
-	sf::Event debugWindowEvent;
-
-	assert(ImGui::SFML::Init(debugWindow));
-	debugWindow.setFramerateLimit(60);
+	assert(ImGui::SFML::Init(window));
 #endif
 
 	gladLoadGL(sf::Context::getFunction);
@@ -47,21 +43,16 @@ int main() {
 		while (window.pollEvent(event)) {
 			eventManager.handleEvent(stateManager.getCurrentStateID(), event);
 
+#ifdef DEV_PHASE
+			ImGui::SFML::ProcessEvent(window, event);
+#endif
+
 			if (event.type == sf::Event::Closed) {
 				window.close();
-#ifdef DEV_PHASE
-				debugWindow.close();
-#endif
 			}
 	}
 
 #ifdef DEV_PHASE
-		while (debugWindow.pollEvent(debugWindowEvent)) {
-			ImGui::SFML::ProcessEvent(debugWindow, debugWindowEvent);
-			if (debugWindowEvent.type == sf::Event::Closed) {
-				debugWindow.close();
-			}
-		}
 		ImGui::NewFrame();
 #endif
 
@@ -74,10 +65,8 @@ int main() {
 		stateManager.render();
 
 #ifdef DEV_PHASE
-		debugWindow.clear(sf::Color::Black);
-		ImGui::SFML::Render(debugWindow);
+		ImGui::SFML::Render(window);
 		ImGui::EndFrame();
-		if (debugWindow.isOpen()) debugWindow.display();
 #endif
 
 		window.display();

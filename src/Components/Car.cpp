@@ -2,6 +2,7 @@
 #include <Core/Global.h>
 
 #include <algorithm>
+#include <future>
 #include <iostream>
 
 #ifdef DEV_PHASE
@@ -61,6 +62,15 @@ void Car::init() {
 
 void Car::update(const sf::Time& deltaTime) {
         calcPosition(deltaTime);
+        calcTurn(deltaTime);
+
+        #ifdef DEV_PHASE
+        ImGui::Begin("Debug");
+        static float angle = 0.0f;
+        ImGui::DragFloat("Angle", &angle);
+        sprite.setRotation(angle);
+        ImGui::End();
+        #endif
 }
 
 void Car::calcAcceleration() {
@@ -68,15 +78,13 @@ void Car::calcAcceleration() {
         if (backwardMovement) forwardAcceleration -= BACKWARD_DECREMENT;
         if (!forwardMovement && !backwardMovement) forwardAcceleration = 0.0f;
 
-        forwardAcceleration = std::min(forwardAcceleration, MAX_X_ACCELERATION);
-        forwardAcceleration = std::max(forwardAcceleration, -MAX_X_ACCELERATION);
+        forwardAcceleration = std::clamp(forwardAcceleration, -MAX_X_ACCELERATION, MAX_X_ACCELERATION);
 
         if (rightMovement) rightAcceleration += RIGHT_INCREMENT;
         if (leftMovement) rightAcceleration -= LEFT_DECREMENT;
         if (!rightMovement && !leftMovement) rightAcceleration = 0.0f;
 
-        rightAcceleration = std::min(rightAcceleration, MAX_Y_ACCELERATION);
-        rightAcceleration = std::max(rightAcceleration, -MAX_Y_ACCELERATION);
+        rightAcceleration = std::clamp(rightAcceleration, -MAX_Y_ACCELERATION, MAX_Y_ACCELERATION);
 }
 
 void Car::calcVelocity(const sf::Time& deltaTime) {
@@ -116,20 +124,54 @@ void Car::restrainToBoundaries(const sf::Vector2f oldPosition, const sf::FloatRe
 
         auto boundaryLeft = sf::FloatRect(0, 0, 1, boundary.getSize().y);
         auto boundaryRight = sf::FloatRect(boundary.getSize().x-1, 0, 1, boundary.getSize().y);
+        auto boundaryTop = sf::FloatRect(0, 0, boundary.getSize().x, 1);
+        auto boundaryBottom = sf::FloatRect(0, boundary.getSize().y-1, boundary.getSize().x, boundary.getSize().y);
 
-        if (boundaryLeft.intersects(spriteBounds) || boundaryRight.intersects(spriteBounds)) {
+        if (
+                boundaryLeft.intersects(spriteBounds) ||
+                boundaryRight.intersects(spriteBounds) ||
+                boundaryTop.intersects(spriteBounds) ||
+                boundaryBottom.intersects(spriteBounds)
+        ) {
                 sprite.setPosition(oldPosition);
         }
 }
 
-void Car::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-        #ifdef DEV_PHASE
-        ImGui::Begin("Debug");
-        float angle;
-        ImGui::DragFloat("Angle", &angle);
-        /*sprite.rotate(angle);*/
-        ImGui::End();
-        #endif
 
+
+void Car::makeTurn(
+        const sf::Time& deltaTime,
+        TurnDirection direction,
+        float& relativeAngle,
+        const float maxRotation,
+        const float angleIncrement
+) {
+        int sign = direction ? -1 : 1;
+        if (sign * relativeAngle > maxRotation) return;
+
+        sprite.rotate(relativeAngle);
+        relativeAngle += sign * angleIncrement * deltaTime.asSeconds();
+}
+
+void Car::calcTurn(const sf::Time& deltaTime) {
+        static float angleTurned = 0.0f;
+        static float turnBack = 0.0f;
+
+        if (leftMovement && rightVelocity < 0.0f) {
+                makeTurn(deltaTime, Left, angleTurned);
+        } else if (rightMovement && rightVelocity > 0.0f) {
+                makeTurn(deltaTime, Right, angleTurned);
+        } else {
+                if (angleTurned > 0) {
+                        makeTurn(deltaTime, Left, turnBack, angleTurned);
+                } else if (angleTurned < 0) {
+                        makeTurn(deltaTime, Right, turnBack, angleTurned);
+                } else {
+                        turnBack = 0.0f;
+                }
+        }
+}
+
+void Car::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         target.draw(sprite);
 }
