@@ -4,7 +4,8 @@
 #include <filesystem>
 
 namespace Util {
-	std::filesystem::path getExecutablePath();
+std::filesystem::path
+getExecutablePath();
 };
 
 #endif // PATH_UTIL_H

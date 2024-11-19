@@ -3,22 +3,24 @@
 
 #include <cstddef>
 
-enum class StateID {
-	Default,
-	Play,
-	Pause
+enum class StateID
+{
+    Default,
+    Play,
+    Pause
 };
 
-struct StateHash {
-    std::size_t operator()(StateID day) const {
+struct StateHash
+{
+    std::size_t operator()(StateID day) const
+    {
         return static_cast<std::size_t>(day);
     }
 };
 
-struct StateEqual {
-    bool operator()(StateID lhs, StateID rhs) const {
-        return lhs == rhs;
-    }
+struct StateEqual
+{
+    bool operator()(StateID lhs, StateID rhs) const { return lhs == rhs; }
 };
 
 #endif // STATE_ID_H

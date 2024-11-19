@@ -1,0 +1,6 @@
+﻿---
+BasedOnStyle: Mozilla
+IndentWidth: 4
+SortIncludes: true
+AlignTrailingComments: true
+...

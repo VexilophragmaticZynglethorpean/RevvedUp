@@ -1,15 +1,17 @@
-#include <Util/Path.h>
+#include "Util/Path.h"
 
 #ifdef _WIN32
 #include <windows.h>
 #elif __APPLE__
 #include <mach-o/dyld.h>
 #elif __linux__
-#include <unistd.h>
 #include <limits.h>
+#include <unistd.h>
 #endif
 
-std::filesystem::path Util::getExecutablePath() {
+std::filesystem::path
+Util::getExecutablePath()
+{
     char path[1024];
 
 #ifdef _WIN32
