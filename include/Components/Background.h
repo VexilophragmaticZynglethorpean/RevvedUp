@@ -22,7 +22,7 @@ private:
 
     sf::Sprite sprite;
     sf::Music music;
-    TextureManager::TextureID currentTexture;
+    TextureID currentTexture;
     std::vector<Atlas> atlases;
 
     double currentTime;
@@ -31,14 +31,14 @@ private:
 
     void incrementFrame();
     void decrementFrame();
-    void playMusic();
 
 public:
     void init();
     void update(const sf::Time& deltaTime, const Car& car);
     void handleEvents(const sf::Event& event);
 
-    void changeAtlas(TextureManager::TextureID id);
+    void playMusic();
+    void changeAtlas(TextureID id);
 
     Background();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

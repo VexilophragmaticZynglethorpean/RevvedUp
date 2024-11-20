@@ -65,7 +65,7 @@ Car::init()
 {
     auto& window = WindowManager::getWindow();
     auto& texManager = TextureManager::getInstance();
-    sprite.setTexture(texManager.getTexture(TextureManager::JEEP0));
+    sprite.setTexture(texManager.getTexture(TextureID::CAR0));
 
     sprite.scale(0.25, 0.25);
 
@@ -111,6 +111,7 @@ Car::update(const sf::Time& deltaTime)
     // Drag and Input for MAX_Y_ACCELERATION
     ImGui::DragFloat("MAX_Y_ACCELERATION", &MAX_Y_ACCELERATION, 0.001f);
     ImGui::InputFloat("MAX_Y_ACCELERATION (Input)", &MAX_Y_ACCELERATION);
+    ImGui::End();
 #endif
 }
 
@@ -182,14 +183,9 @@ Car::intersectsBoundaries(const sf::FloatRect& boundary)
     auto boundaryLeft = sf::FloatRect(0, 0, 1, boundary.getSize().y);
     auto boundaryRight =
       sf::FloatRect(boundary.getSize().x - 1, 0, 1, boundary.getSize().y);
-    auto boundaryTop = sf::FloatRect(0, 0, boundary.getSize().x, 1);
-    auto boundaryBottom = sf::FloatRect(
-      0, boundary.getSize().y - 1, boundary.getSize().x, boundary.getSize().y);
 
     if (boundaryLeft.intersects(spriteBounds) ||
-        boundaryRight.intersects(spriteBounds) ||
-        boundaryTop.intersects(spriteBounds) ||
-        boundaryBottom.intersects(spriteBounds)) {
+        boundaryRight.intersects(spriteBounds) {
         return true;
     }
     return false;

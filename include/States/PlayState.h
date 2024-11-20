@@ -4,6 +4,7 @@
 #include "Components/Car.h"
 #include "Components/Background.h"
 #include "Core/State.h"
+#include "SFML/Graphics/RenderTarget.hpp"
 #include <SFML/Audio.hpp>
 
 class PlayState : public State
@@ -11,18 +12,15 @@ class PlayState : public State
   private:
     Car car;
     Background background;
-    std::vector<sf::SoundBuffer> soundBuffers;
-    sf::Sound sound;
 
   public:
     PlayState();
 
     void update(const sf::Time& deltaTime) override;
-    void render() override;
+    void render(sf::RenderTarget& target) override;
 
     void init() override;
     void exit() override;
-    void resize(const sf::Event& event);
 };
 
 #endif // PLAY_STATE_H

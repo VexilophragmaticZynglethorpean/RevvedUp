@@ -2,6 +2,7 @@
 #define STATE_H
 
 #include "Core/StateID.h"
+#include "SFML/Graphics/RenderTarget.hpp"
 #include <SFML/Graphics.hpp>
 
 class State
@@ -16,7 +17,7 @@ class State
 
     virtual void init() = 0;
     virtual void update(const sf::Time& deltaTime) = 0;
-    virtual void render() = 0;
+    virtual void render(sf::RenderTarget& target) = 0;
 
     virtual void exit() = 0;
 };

@@ -5,6 +5,7 @@
 #include <stack>
 #include "Core/State.h"
 #include "Core/StateID.h"
+#include "SFML/Graphics/RenderTarget.hpp"
 #include <SFML/Graphics.hpp>
 
 class StateManager
@@ -21,7 +22,7 @@ class StateManager
     void popState();
 
     void update(const sf::Time& deltaTime);
-    void render();
+    void render(sf::RenderTarget& target);
 
     StateManager& operator=(const StateManager&) = delete;
     StateManager(const StateManager&) = delete;

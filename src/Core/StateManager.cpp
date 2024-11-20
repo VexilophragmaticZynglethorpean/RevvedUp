@@ -42,9 +42,9 @@ StateManager::update(const sf::Time& deltaTime)
 }
 
 void
-StateManager::render()
+StateManager::render(sf::RenderTarget& target)
 {
     if (!states.empty()) {
-        states.top()->render();
+        states.top()->render(target);
     }
 }

@@ -1,8 +1,11 @@
 #include "Core/EventManager.h"
+#include "Core/TextureManager.h"
 #include "Core/WindowManager.h"
+#include "Core/SoundManager.h"
 #include "States/PlayState.h"
-#include "SFML/Window/Event.hpp"
+#include "SFML/Graphics/RenderTarget.hpp"
 #include "Util/Path.h"
+#include "SFML/Window/Event.hpp"
 #include <functional>
 #include <cstdlib>
 
@@ -13,8 +16,6 @@
 PlayState::PlayState()
   : car()
   , background()
-  , soundBuffers(3)
-  , sound()
 {
     id = StateID::Play;
 }
@@ -22,11 +23,19 @@ PlayState::PlayState()
 void
 PlayState::init()
 {
-    background.init();
-    car.init();
-    background.changeAtlas(TextureManager::TextureID::ATLAS1);
+    auto& eventManager = EventManager::getInstance();
+    auto& soundManager = SoundManager::getInstance();
+    auto& textureManager = TextureManager::getInstance();
 
-    EventManager& eventManager = EventManager::getInstance();
+    textureManager.loadTexture(TextureID::ATLAS0, Util::getExecutablePath() / "assets/atlas0.png");
+    textureManager.loadTexture(TextureID::ATLAS1, Util::getExecutablePath() / "assets/atlas1.png");
+    textureManager.loadTexture(TextureID::ATLAS2, Util::getExecutablePath() / "assets/atlas2.png");
+    textureManager.loadTexture(TextureID::CAR0, Util::getExecutablePath() / "assets/car0.png");
+
+    soundManager.loadSound(SoundID::THREE, Util::getExecutablePath() / "assets/three.wav");
+    soundManager.loadSound(SoundID::TWO, Util::getExecutablePath() / "assets/two.wav");
+    soundManager.loadSound(SoundID::ONE, Util::getExecutablePath() / "assets/one.wav");
+    soundManager.loadSound(SoundID::GO, Util::getExecutablePath() / "assets/go.wav");
 
     eventManager.addListener(
       StateID::Play, sf::Event::Resized, std::bind(&WindowManager::resizeWindow, std::placeholders::_1));
@@ -53,10 +62,14 @@ PlayState::init()
     eventManager.addListener(
       StateID::Play, sf::Event::Resized, std::bind(&Background::handleEvents, &background, std::placeholders::_1));
 
+    background.init();
+    car.init();
 
-    soundBuffers[0].loadFromFile(Util::getExecutablePath() / "assets/three.wav");
-    soundBuffers[1].loadFromFile(Util::getExecutablePath() / "assets/two.wav");
-    soundBuffers[2].loadFromFile(Util::getExecutablePath() / "assets/one.wav");
+    soundManager.playSound(SoundID::THREE);
+    soundManager.playSound(SoundID::TWO);
+    soundManager.playSound(SoundID::ONE);
+    soundManager.playSound(SoundID::GO);
+    background.playMusic();
 }
 
 void
@@ -67,12 +80,10 @@ PlayState::update(const sf::Time& deltaTime)
 }
 
 void
-PlayState::render()
+PlayState::render(sf::RenderTarget& target)
 {
-    auto& window = WindowManager::getWindow();
-
-    window.draw(background);
-    window.draw(car);
+    target.draw(background);
+    target.draw(car);
 }
 
 void

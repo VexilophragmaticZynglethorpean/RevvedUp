@@ -50,7 +50,7 @@ main()
 
         window.clear(sf::Color::Black);
 
-        stateManager.render();
+        stateManager.render(window);
 
 #ifdef DEV_PHASE
         ImGui::SFML::Render(window);

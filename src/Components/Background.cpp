@@ -2,36 +2,27 @@
 #include "Core/WindowManager.h"
 #include "Core/TextureManager.h"
 #include "Util/Path.h"
-#include <functional>
 
 constexpr std::size_t NO_OF_ATLASES = 3;
 
-Background::Background() : currentRow(0), currentCol(0), currentFrame(0), currentTime(0.0), atlases(3), currentTexture(TextureManager::TextureID::ATLAS0), music() {
+Background::Background() : currentRow(0), currentCol(0), currentFrame(0), currentTime(0.0), atlases(3), currentTexture(TextureID::ATLAS0), music() {
 }
 
 void Background::init() {
-    atlases.at(TextureManager::TextureID::ATLAS0) = Atlas(5, 11, 55);
-    atlases.at(TextureManager::TextureID::ATLAS1) = Atlas(4, 6, 23);
-    atlases.at(TextureManager::TextureID::ATLAS2) = Atlas(4, 6, 23);
+    atlases.at(static_cast<std::size_t>(TextureID::ATLAS0)) = Atlas(5, 11, 55, 100.0);
+    atlases.at(static_cast<std::size_t>(TextureID::ATLAS1)) = Atlas(4, 6, 23, 100.0);
+    atlases.at(static_cast<std::size_t>(TextureID::ATLAS2)) = Atlas(4, 6, 23, 100.0);
 
     changeAtlas(currentTexture);
 
     music.openFromFile(Util::getExecutablePath() / "assets/music.ogg");
     music.setLoop(true);
-
-    sf::Thread musicThread(std::bind(&sf::Music::play, &music));
-    musicThread.launch();
-
-}
-
-void Background::playMusic() {
-    music.play();
 }
 
 void Background::update(const sf::Time& deltaTime, const Car& car) {
     currentTime += deltaTime.asMilliseconds();
 
-    auto& atlas = atlases.at(currentTexture);
+    auto& atlas = atlases.at(static_cast<std::size_t>(currentTexture));
 
     if (!car.forwardVelocity || !atlas.frameDurationConstant) return;
     auto frameDuration = atlas.frameDurationConstant / std::abs(car.forwardVelocity);
@@ -55,9 +46,13 @@ void Background::handleEvents(const sf::Event& event) {
     );
 }
 
+void Background::playMusic() {
+    music.play();
+}
+
 void Background::incrementFrame() {
     currentFrame++;
-    auto& atlas = atlases.at(currentTexture);
+    auto& atlas = atlases.at(static_cast<std::size_t>(currentTexture));
 
     if(++currentCol >= atlas.cols) {
         currentCol = 0;
@@ -72,7 +67,7 @@ void Background::incrementFrame() {
 
 void Background::decrementFrame() {
     currentFrame--;
-    auto& atlas = atlases.at(currentTexture);
+    auto& atlas = atlases.at(static_cast<std::size_t>(currentTexture));
 
     if(--currentCol < 0) {
         currentCol = atlas.cols-1;
@@ -86,13 +81,13 @@ void Background::decrementFrame() {
     }
 }
 
-void Background::changeAtlas(TextureManager::TextureID textureID) {
+void Background::changeAtlas(TextureID textureID) {
     currentTexture = textureID;
 
     auto& texManager = TextureManager::getInstance();
     sprite.setTexture(texManager.getTexture(textureID));
 
-    auto& atlas = atlases.at(currentTexture);
+    auto& atlas = atlases.at(static_cast<std::size_t>(currentTexture));
 
     if(!atlas.cols || !atlas.rows) return;
 

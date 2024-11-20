@@ -2,22 +2,24 @@
 #define TEXTURE_MANAGER_H
 
 #include <SFML/Graphics.hpp>
-#include <string>
+#include <filesystem>
 #include <vector>
 
-class TextureManager
-{
-  public:
-    enum TextureID
+    enum class TextureID
     {
         ATLAS0,
         ATLAS1,
         ATLAS2,
-        JEEP0
+        CAR0,
+        TEXTURE_COUNT
     };
 
+class TextureManager
+{
+  public:
+
     sf::Texture& getTexture(TextureID id);
-    void loadTexture(const std::string& filePath);
+    void loadTexture(const TextureID id, const std::filesystem::path& filePath);
 
     static TextureManager& getInstance();
 

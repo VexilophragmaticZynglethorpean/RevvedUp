@@ -3,16 +3,17 @@
 
 #include <SFML/Graphics.hpp>
 
-class Background;
 
-class Car : public sf::Drawable
-{
-  private:
-    enum TurnDirection
+    enum class TurnDirection
     {
         Left = 0,
         Right = 1
     };
+
+class Background;
+class Car : public sf::Drawable
+{
+  private:
 
     sf::Sprite sprite;
 

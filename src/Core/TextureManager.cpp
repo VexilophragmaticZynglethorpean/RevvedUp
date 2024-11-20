@@ -1,13 +1,7 @@
 #include "Core/TextureManager.h"
-#include "Util/Path.h"
+#include <cstddef>
 
-TextureManager::TextureManager()
-{
-    loadTexture(Util::getExecutablePath() / "assets/atlas0.png");
-    loadTexture(Util::getExecutablePath() / "assets/atlas1.png");
-    loadTexture(Util::getExecutablePath() / "assets/atlas2.png");
-    loadTexture(Util::getExecutablePath() / "assets/car0.png");
-}
+TextureManager::TextureManager() : textures(static_cast<std::size_t>(TextureID::TEXTURE_COUNT)) {}
 
 TextureManager&
 TextureManager::getInstance()
@@ -19,16 +13,18 @@ TextureManager::getInstance()
 sf::Texture&
 TextureManager::getTexture(TextureID id)
 {
-    if (id < 0 || id >= textures.size()) {
-        throw std::out_of_range("Invalid texture ID");
+    std::size_t ID = static_cast<std::size_t>(id);
+    if (ID < 0 || ID >= textures.size()) {
+        throw std::out_of_range("InvalID texture ID");
     }
-    return textures[id];
+    return textures.at(static_cast<std::size_t>(ID));
 }
 
 void
-TextureManager::loadTexture(const std::string& filePath)
+TextureManager::loadTexture(const TextureID id, const std::filesystem::path& filePath)
 {
+    std::size_t ID = static_cast<std::size_t>(id);
     sf::Texture texture;
     texture.loadFromFile(filePath);
-    textures.push_back(std::move(texture));
+    textures.at(ID) = std::move(texture);
 }
