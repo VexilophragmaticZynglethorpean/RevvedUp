@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include "Core/Global.h"
+#include "Core/WindowManager.h"
 #include "Core/EventManager.h"
 #include "Core/StateManager.h"
 #include "States/PlayState.h"
@@ -13,7 +12,7 @@
 int
 main()
 {
-    auto& window = Global::getWindow();
+    auto& window = WindowManager::getWindow();
 
 #ifdef DEV_PHASE
     assert(ImGui::SFML::Init(window));
@@ -23,7 +22,7 @@ main()
     auto& eventManager = EventManager::getInstance();
     sf::Clock deltaClock;
 
-    Global::getClock();
+    WindowManager::getClock();
 
     stateManager.pushState(std::make_unique<PlayState>());
 

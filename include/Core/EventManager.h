@@ -8,11 +8,6 @@
 
 class EventManager
 {
-  private:
-    EventManager() = default;
-    EventManager(const EventManager&) = delete;
-    EventManager& operator=(const EventManager&) = delete;
-
   public:
     using EventCallback = std::function<void(const sf::Event&)>;
 
@@ -23,7 +18,11 @@ class EventManager
                      EventCallback callback);
     void handleEvent(const StateID state, const sf::Event& event);
 
+    EventManager(const EventManager&) = delete;
+    EventManager& operator=(const EventManager&) = delete;
+
   private:
+    EventManager() = default;
     std::unordered_map<
       StateID,
       std::unordered_map<sf::Event::EventType, std::vector<EventCallback>>>

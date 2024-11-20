@@ -1,30 +1,34 @@
 #include "Components/Background.h"
-#include "Core/Global.h"
+#include "Core/WindowManager.h"
 #include "Core/TextureManager.h"
-#include "SFML/Window/Event.hpp"
+#include "Util/Path.h"
 
-constexpr float FRAME_DURATION = 1000.0f;
 constexpr std::size_t NO_OF_ATLASES = 3;
 
-Background::Background() : currentRow(0), currentCol(0), currentFrame(0), currentTime(0.0), atlases(3), currentTexture(TextureManager::TextureID::ATLAS0){
+Background::Background() : currentRow(0), currentCol(0), currentFrame(0), currentTime(0.0), atlases(3), currentTexture(TextureManager::TextureID::ATLAS0), music(){
 }
 
 void Background::init() {
-    atlases.at(TextureManager::TextureID::ATLAS0) = Atlas(5, 11, 55);
-    atlases.at(TextureManager::TextureID::ATLAS1) = Atlas(4, 6, 23);
-    atlases.at(TextureManager::TextureID::ATLAS2) = Atlas(4, 6, 23);
+    atlases.emplace_back(5, 11, 55, 100.0); // ATLAS0
+    atlases.emplace_back(4, 6, 23, 100.0); // ATLAS1
+    atlases.emplace_back(4, 6, 23, 100.0); // ATLAS2
 
     changeAtlas(currentTexture);
+
+    /*music.openFromFile(Util::getExecutablePath() / "assets/music.wav");*/
+    /*music.setLoop(true);*/
+    /*music.play();*/
 }
 
 void Background::update(const sf::Time& deltaTime, const Car& car) {
     currentTime += deltaTime.asMilliseconds();
 
-    if (!car.forwardVelocity) return;
+    auto& atlas = atlases.at(currentTexture);
 
-    auto frameDuration = FRAME_DURATION / std::abs(car.forwardVelocity);
+    if (!car.forwardVelocity || !atlas.frameDurationConstant) return;
+    auto frameDuration = atlas.frameDurationConstant / std::abs(car.forwardVelocity);
+
     if (currentTime < frameDuration) return;
-
     currentTime -= frameDuration;
 
     if (car.forwardVelocity > 0)
@@ -32,7 +36,6 @@ void Background::update(const sf::Time& deltaTime, const Car& car) {
     else if (car.forwardVelocity < 0)
         decrementFrame();
 
-    auto& atlas = atlases.at(currentTexture);
 
     sprite.setTextureRect(sf::IntRect(currentCol * atlas.tileWidth, currentRow * atlas.tileHeight, atlas.tileWidth, atlas.tileHeight));
 }
@@ -88,7 +91,7 @@ void Background::changeAtlas(TextureManager::TextureID textureID) {
 
     sprite.setTextureRect(sf::IntRect(0, 0, atlas.tileWidth, atlas.tileHeight));
 
-    auto windowSize = Global::getWindow().getSize();
+    auto windowSize = WindowManager::getWindow().getSize();
     sprite.setScale(
         static_cast<float>(windowSize.x) / sprite.getTextureRect().getSize().x,
         static_cast<float>(windowSize.y) / sprite.getTextureRect().getSize().y

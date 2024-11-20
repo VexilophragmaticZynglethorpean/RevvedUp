@@ -1,7 +1,8 @@
 #include "Core/EventManager.h"
-#include "Core/Global.h"
+#include "Core/WindowManager.h"
 #include "States/PlayState.h"
 #include "SFML/Window/Event.hpp"
+#include "Util/Path.h"
 #include <functional>
 #include <cstdlib>
 
@@ -12,6 +13,8 @@
 PlayState::PlayState()
   : car()
   , background()
+  , soundBuffers(3)
+  , sound()
 {
     id = StateID::Play;
 }
@@ -24,6 +27,15 @@ PlayState::init()
     background.changeAtlas(TextureManager::TextureID::ATLAS1);
 
     EventManager& eventManager = EventManager::getInstance();
+
+    eventManager.addListener(
+      StateID::Play, sf::Event::Resized, std::bind(&WindowManager::resizeWindow, std::placeholders::_1));
+
+    eventManager.addListener(
+      StateID::Play, sf::Event::KeyPressed, std::bind(&WindowManager::toggleFullScreen, std::placeholders::_1));
+
+    eventManager.addListener(
+      StateID::Play, sf::Event::Closed, std::bind(&PlayState::exit, this));
 
     eventManager.addListener(
       StateID::Play,
@@ -41,12 +53,10 @@ PlayState::init()
     eventManager.addListener(
       StateID::Play, sf::Event::Resized, std::bind(&Background::handleEvents, &background, std::placeholders::_1));
 
-    eventManager.addListener(
-      StateID::Play, sf::Event::Resized, std::bind(&PlayState::resize, this, std::placeholders::_1));
 
-    eventManager.addListener(
-      StateID::Play, sf::Event::Closed, std::bind(&PlayState::exit, this));
-
+    soundBuffers[0].loadFromFile(Util::getExecutablePath() / "assets/three.wav");
+    soundBuffers[1].loadFromFile(Util::getExecutablePath() / "assets/two.wav");
+    soundBuffers[2].loadFromFile(Util::getExecutablePath() / "assets/one.wav");
 }
 
 void
@@ -59,16 +69,10 @@ PlayState::update(const sf::Time& deltaTime)
 void
 PlayState::render()
 {
-    auto& window = Global::getWindow();
+    auto& window = WindowManager::getWindow();
 
     window.draw(background);
     window.draw(car);
-}
-
-void
-PlayState::resize(const sf::Event& event){
-  sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-  Global::getWindow().setView(sf::View(visibleArea));
 }
 
 void

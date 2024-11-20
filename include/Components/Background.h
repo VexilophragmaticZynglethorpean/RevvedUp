@@ -2,6 +2,7 @@
 #define BACKGROUND_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Components/Car.h"
 #include "Core/TextureManager.h"
 
@@ -13,12 +14,14 @@ private:
         std::size_t tileWidth, tileHeight;
         std::size_t rows, cols;
         std::size_t frameCount;
+        double frameDurationConstant;
 
-        Atlas(std::size_t cols = 0, std::size_t rows = 0, std::size_t frameCount = 0)
-        : cols(cols), rows(rows), frameCount(frameCount), tileWidth(0), tileHeight(0) {}
+        Atlas(std::size_t cols = 0, std::size_t rows = 0, std::size_t frameCount = 0, double frameDurationConstant = 0.0)
+        : cols(cols), rows(rows), frameCount(frameCount), tileWidth(0), tileHeight(0), frameDurationConstant(frameDurationConstant) {}
     };
 
     sf::Sprite sprite;
+    sf::Music music;
     TextureManager::TextureID currentTexture;
     std::vector<Atlas> atlases;
 

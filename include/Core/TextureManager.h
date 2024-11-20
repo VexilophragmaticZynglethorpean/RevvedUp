@@ -23,6 +23,8 @@ class TextureManager
 
   private:
     TextureManager();
+    TextureManager(const TextureManager&) = delete;
+    TextureManager& operator=(const TextureManager&) = delete;
     std::vector<sf::Texture> textures;
 };
 

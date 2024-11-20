@@ -1,6 +1,5 @@
 #include "Core/TextureManager.h"
 #include "Util/Path.h"
-#include <iostream>
 
 TextureManager::TextureManager()
 {
@@ -30,6 +29,6 @@ void
 TextureManager::loadTexture(const std::string& filePath)
 {
     sf::Texture texture;
-    if(!texture.loadFromFile(filePath)) std::cerr << "Err";
+    texture.loadFromFile(filePath);
     textures.push_back(std::move(texture));
 }

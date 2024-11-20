@@ -12,7 +12,6 @@ class StateManager
   private:
     std::stack<std::unique_ptr<State>> states;
     StateManager() = default;
-    StateManager& operator=(const StateManager&) = delete;
 
   public:
     static StateManager& getInstance();
@@ -23,5 +22,8 @@ class StateManager
 
     void update(const sf::Time& deltaTime);
     void render();
+
+    StateManager& operator=(const StateManager&) = delete;
+    StateManager(const StateManager&) = delete;
 };
 #endif // STATE_MANAGER_H

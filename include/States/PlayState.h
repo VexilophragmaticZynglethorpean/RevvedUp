@@ -4,15 +4,15 @@
 #include "Components/Car.h"
 #include "Components/Background.h"
 #include "Core/State.h"
-
-#include <chrono>
+#include <SFML/Audio.hpp>
 
 class PlayState : public State
 {
   private:
     Car car;
     Background background;
-    std::chrono::time_point<std::chrono::high_resolution_clock> t_start;
+    std::vector<sf::SoundBuffer> soundBuffers;
+    sf::Sound sound;
 
   public:
     PlayState();

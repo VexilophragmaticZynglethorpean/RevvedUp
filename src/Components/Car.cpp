@@ -1,5 +1,5 @@
 #include "Components/Car.h"
-#include "Core/Global.h"
+#include "Core/WindowManager.h"
 #include "Core/TextureManager.h"
 #include <algorithm>
 
@@ -8,6 +8,7 @@
 #include <imgui.h>
 #endif
 
+namespace {
 static float FORWARD_INCREMENT = 0.1f;
 static float BACKWARD_DECREMENT = 0.1f;
 static float RIGHT_INCREMENT = 0.1f;
@@ -17,11 +18,7 @@ static float DAMPING = 0.1f;
 static float MAX_DAMPING = 1.0f;
 static float MAX_X_ACCELERATION = 10.0f;
 static float MAX_Y_ACCELERATION = 10.0f;
-
-static float MAX_ANGLE = 0.5;
-static float MAX_RELATIVE_ROTATION = 0.5;
-static float ANGLE_INCREMENT = 0.1;
-static float TURN_BACK_ANGLE_INCREMENT = 0.8;
+}
 
 Car::Car()
   : forwardVelocity(0.0f)
@@ -66,7 +63,7 @@ Car::handleEvents(const sf::Event& event)
 void
 Car::init()
 {
-    auto& window = Global::getWindow();
+    auto& window = WindowManager::getWindow();
     auto& texManager = TextureManager::getInstance();
     sprite.setTexture(texManager.getTexture(TextureManager::JEEP0));
 
@@ -128,7 +125,7 @@ Car::calcAcceleration()
         forwardAcceleration = 0.0f;
 
     forwardAcceleration =
-      std::clamp(forwardAcceleration, -MAX_X_ACCELERATION, MAX_X_ACCELERATION);
+      std::clamp(forwardAcceleration, -MAX_Y_ACCELERATION, MAX_Y_ACCELERATION);
 
     if (rightMovement)
         rightAcceleration += RIGHT_INCREMENT;
@@ -138,7 +135,7 @@ Car::calcAcceleration()
         rightAcceleration = 0.0f;
 
     rightAcceleration =
-      std::clamp(rightAcceleration, -MAX_Y_ACCELERATION, MAX_Y_ACCELERATION);
+      std::clamp(rightAcceleration, -MAX_X_ACCELERATION, MAX_X_ACCELERATION);
 }
 
 void
@@ -164,16 +161,14 @@ Car::calcPosition(const sf::Time& deltaTime)
 
     float dt = deltaTime.asSeconds();
 
-    /*float yOffset = forwardVelocity * dt;*/
-    float yOffset = 0.0f;
     float xOffset = rightVelocity * dt;
 
-    auto windowSize = Global::getWindow().getSize();
+    auto windowSize = WindowManager::getWindow().getSize();
 
     sf::Vector2f oldPosition = sprite.getPosition();
     sf::FloatRect windowBounds(0, 0, windowSize.x, windowSize.y);
 
-    sprite.move(xOffset, -yOffset);
+    sprite.move(xOffset, 0);
 
     if (intersectsBoundaries(windowBounds))
         sprite.setPosition(oldPosition);
