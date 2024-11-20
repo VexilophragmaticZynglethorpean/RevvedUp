@@ -18,10 +18,9 @@ class Car : public sf::Drawable
     sf::Sprite sprite;
 
     float forwardVelocity;
-    float rightVelocity;
-
     float forwardAcceleration;
-    float rightAcceleration;
+
+    sf::Vector2f positionPercentage;
 
     bool forwardMovement;
     bool backwardMovement;
@@ -34,10 +33,6 @@ class Car : public sf::Drawable
     void calcTurn(const sf::Time& deltaTime);
 
     bool intersectsBoundaries(const sf::FloatRect& boundary);
-    void turnBack(const sf::Time& deltaTime, float& angleTurned);
-    void makeTurn(const sf::Time& deltaTime,
-                  TurnDirection direction,
-                  float& relativeAngle);
 
   public:
     friend class Background;
