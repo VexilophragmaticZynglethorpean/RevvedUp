@@ -1,9 +1,7 @@
 #ifndef PLAY_STATE_H
 #define PLAY_STATE_H
 
-#include "Components/Camera.h"
 #include "Components/Car.h"
-#include "Components/Cube.h"
 #include "Components/Background.h"
 #include "Core/State.h"
 
@@ -13,8 +11,6 @@ class PlayState : public State
 {
   private:
     Car car;
-    Cube cube;
-    Camera camera;
     Background background;
     std::chrono::time_point<std::chrono::high_resolution_clock> t_start;
 
@@ -26,7 +22,7 @@ class PlayState : public State
 
     void init() override;
     void exit() override;
-    void resize();
+    void resize(const sf::Event& event);
 };
 
 #endif // PLAY_STATE_H

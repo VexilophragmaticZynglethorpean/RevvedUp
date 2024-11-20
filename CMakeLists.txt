@@ -7,15 +7,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-set(GLAD_SOURCES_DIR "${PROJECT_SOURCE_DIR}/external/glad/")
-add_subdirectory(external/glad/cmake)
-glad_add_library(glad STATIC API gl:core=4.6)
-
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(SFML_BUILD_NETWORK "Build network" OFF)
 add_subdirectory(external/SFML)
-
-add_subdirectory(external/glm)
 
 if(DEFINED DEV_PHASE)
     set(IMGUI_DIR ${PROJECT_SOURCE_DIR}/external/imgui)
@@ -26,16 +20,12 @@ if(DEFINED DEV_PHASE)
 endif()
 
 file(COPY ${PROJECT_SOURCE_DIR}/assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-file(COPY ${PROJECT_SOURCE_DIR}/src/shaders DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 file(GLOB_RECURSE SOURCES "src/*.cpp") 
 add_executable(${PROJECT_NAME} ${SOURCES}) 
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     external/SFML/include
-    build/gladsources/glad/include
-    external/glm
-
     include
 )
 
@@ -44,8 +34,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     sfml-graphics
     sfml-window
     sfml-audio
-    glad
-    glm
 )
 
 

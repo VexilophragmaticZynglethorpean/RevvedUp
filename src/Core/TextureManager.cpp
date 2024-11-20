@@ -7,7 +7,7 @@ TextureManager::TextureManager()
     loadTexture(Util::getExecutablePath() / "assets/atlas0.png");
     loadTexture(Util::getExecutablePath() / "assets/atlas1.png");
     loadTexture(Util::getExecutablePath() / "assets/atlas2.png");
-    loadTexture(Util::getExecutablePath() / "assets/jeep0.png");
+    loadTexture(Util::getExecutablePath() / "assets/car0.png");
 }
 
 TextureManager&

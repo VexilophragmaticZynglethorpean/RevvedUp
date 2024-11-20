@@ -1,9 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include <glad/gl.h>
-
 #include "Core/Global.h"
-
 #include "Core/EventManager.h"
 #include "Core/StateManager.h"
 #include "States/PlayState.h"
@@ -22,8 +19,6 @@ main()
     assert(ImGui::SFML::Init(window));
 #endif
 
-    gladLoadGL(sf::Context::getFunction);
-
     auto& stateManager = StateManager::getInstance();
     auto& eventManager = EventManager::getInstance();
     sf::Clock deltaClock;
@@ -31,11 +26,6 @@ main()
     Global::getClock();
 
     stateManager.pushState(std::make_unique<PlayState>());
-
-    /*glEnable(GL_DEPTH_TEST);*/
-    /*glDepthFunc(GL_LESS);*/
-    /*glEnable(GL_BLEND);*/
-    /*glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 
     while (window.isOpen()) {
         sf::Event event;
@@ -59,10 +49,7 @@ main()
         stateManager.update(deltaClock.getElapsedTime());
         deltaClock.restart();
 
-        window.clear(sf::Color::Blue);
-
-        /*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
-        /*glClearColor(1.0, 1.0, 1.0, 1.0);*/
+        window.clear(sf::Color::Black);
 
         stateManager.render();
 

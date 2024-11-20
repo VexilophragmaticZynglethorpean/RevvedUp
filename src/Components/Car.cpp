@@ -1,7 +1,6 @@
 #include "Components/Car.h"
 #include "Core/Global.h"
 #include "Core/TextureManager.h"
-
 #include <algorithm>
 
 #ifdef DEV_PHASE
@@ -43,6 +42,11 @@ Car::Car()
 void
 Car::handleEvents(const sf::Event& event)
 {
+    if (event.type == sf::Event::Resized) {
+        sprite.setPosition(event.size.width/2.0, event.size.height * 0.9);
+        return;
+    }
+
     bool pressed = event.type != sf::Event::KeyReleased;
     bool W_Up =
       event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up;
@@ -62,19 +66,20 @@ Car::handleEvents(const sf::Event& event)
 void
 Car::init()
 {
+    auto& window = Global::getWindow();
     auto& texManager = TextureManager::getInstance();
-    sprite.setPosition(500, 500);
     sprite.setTexture(texManager.getTexture(TextureManager::JEEP0));
 
+    sprite.scale(0.25, 0.25);
+
     auto spriteBounds = sprite.getLocalBounds();
-    sprite.setOrigin(spriteBounds.width / 2, spriteBounds.height / 2);
+    sprite.setOrigin(spriteBounds.width / 2, spriteBounds.height);
 }
 
 void
 Car::update(const sf::Time& deltaTime)
 {
     calcPosition(deltaTime);
-    calcTurn(deltaTime);
 
 #ifdef DEV_PHASE
     ImGui::Begin("Debug");
@@ -109,25 +114,6 @@ Car::update(const sf::Time& deltaTime)
     // Drag and Input for MAX_Y_ACCELERATION
     ImGui::DragFloat("MAX_Y_ACCELERATION", &MAX_Y_ACCELERATION, 0.001f);
     ImGui::InputFloat("MAX_Y_ACCELERATION (Input)", &MAX_Y_ACCELERATION);
-
-    // Drag and Input for MAX_ANGLE
-    ImGui::DragFloat("MAX_ANGLE", &MAX_ANGLE, 0.001f);
-    ImGui::InputFloat("MAX_ANGLE (Input)", &MAX_ANGLE);
-
-    // Drag and Input for MAX_RELATIVE_ROTATION
-    ImGui::DragFloat("MAX_RELATIVE_ROTATION", &MAX_RELATIVE_ROTATION, 0.001f);
-    ImGui::InputFloat("MAX_RELATIVE_ROTATION (Input)", &MAX_RELATIVE_ROTATION);
-
-    // Drag and Input for ANGLE_INCREMENT
-    ImGui::DragFloat("ANGLE_INCREMENT", &ANGLE_INCREMENT, 0.001f);
-    ImGui::InputFloat("ANGLE_INCREMENT (Input)", &ANGLE_INCREMENT);
-
-    // Drag and Input for TURN_BACK_ANGLE_INCREMENT
-    ImGui::DragFloat(
-      "TURN_BACK_ANGLE_INCREMENT", &TURN_BACK_ANGLE_INCREMENT, 0.001f);
-    ImGui::InputFloat("TURN_BACK_ANGLE_INCREMENT (Input)",
-                      &TURN_BACK_ANGLE_INCREMENT);
-    ImGui::End();
 #endif
 }
 
@@ -178,7 +164,8 @@ Car::calcPosition(const sf::Time& deltaTime)
 
     float dt = deltaTime.asSeconds();
 
-    float yOffset = forwardVelocity * dt;
+    /*float yOffset = forwardVelocity * dt;*/
+    float yOffset = 0.0f;
     float xOffset = rightVelocity * dt;
 
     auto windowSize = Global::getWindow().getSize();
@@ -211,60 +198,6 @@ Car::intersectsBoundaries(const sf::FloatRect& boundary)
         return true;
     }
     return false;
-}
-
-void
-Car::makeTurn(const sf::Time& deltaTime,
-              TurnDirection direction,
-              float& relativeAngle)
-{
-    auto oldRotation = sprite.getRotation();
-
-    auto windowSize = Global::getWindow().getSize();
-    sf::FloatRect windowBounds(0, 0, windowSize.x, windowSize.y);
-
-    if (oldRotation > MAX_ANGLE || oldRotation < -MAX_ANGLE)
-        return;
-
-    int sign = direction ? 1 : -1;
-    if (sign * relativeAngle > MAX_RELATIVE_ROTATION)
-        return;
-
-    sprite.rotate(relativeAngle);
-
-    if (intersectsBoundaries(windowBounds))
-        sprite.setRotation(oldRotation);
-
-    relativeAngle += sign * ANGLE_INCREMENT;
-}
-
-void
-Car::turnBack(const sf::Time& deltaTime, float& angleTurned)
-{
-    if (angleTurned > 0) {
-        angleTurned -= TURN_BACK_ANGLE_INCREMENT * deltaTime.asSeconds();
-        angleTurned = std::max(angleTurned, 0.0f);
-
-    } else if (angleTurned < 0) {
-        angleTurned += TURN_BACK_ANGLE_INCREMENT * deltaTime.asSeconds();
-        angleTurned = std::min(angleTurned, 0.0f);
-    }
-
-    sprite.setRotation(angleTurned);
-}
-
-void
-Car::calcTurn(const sf::Time& deltaTime)
-{
-    static float angleTurned = 0.0f;
-
-    if (leftMovement && rightVelocity < 0.0f) {
-        makeTurn(deltaTime, Left, angleTurned);
-    } else if (rightMovement && rightVelocity > 0.0f) {
-        makeTurn(deltaTime, Right, angleTurned);
-    } else {
-        turnBack(deltaTime, angleTurned);
-    }
 }
 
 void

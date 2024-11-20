@@ -1,4 +1,5 @@
 #include "Core/Global.h"
+#include "Util/Path.h"
 
 sf::RenderWindow&
 Global::getWindow()
@@ -16,14 +17,14 @@ Global::getWindow()
                                      sf::Style::Close,
                                    settings);
 
-    return window;
-}
+    sf::Image icon;
+    icon.loadFromFile(Util::getExecutablePath() / "assets/icon.png");
 
-sf::Shader&
-Global::getShader()
-{
-    static sf::Shader shader;
-    return shader;
+    window.setKeyRepeatEnabled(false);
+    window.setVerticalSyncEnabled(true);
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
+    return window;
 }
 
 sf::Clock&
