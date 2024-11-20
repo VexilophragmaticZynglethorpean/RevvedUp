@@ -31,6 +31,7 @@ private:
 
     void incrementFrame();
     void decrementFrame();
+    void playMusic();
 
 public:
     void init();

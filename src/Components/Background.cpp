@@ -2,22 +2,30 @@
 #include "Core/WindowManager.h"
 #include "Core/TextureManager.h"
 #include "Util/Path.h"
+#include <functional>
 
 constexpr std::size_t NO_OF_ATLASES = 3;
 
-Background::Background() : currentRow(0), currentCol(0), currentFrame(0), currentTime(0.0), atlases(3), currentTexture(TextureManager::TextureID::ATLAS0), music(){
+Background::Background() : currentRow(0), currentCol(0), currentFrame(0), currentTime(0.0), atlases(3), currentTexture(TextureManager::TextureID::ATLAS0), music() {
 }
 
 void Background::init() {
-    atlases.emplace_back(5, 11, 55, 100.0); // ATLAS0
-    atlases.emplace_back(4, 6, 23, 100.0); // ATLAS1
-    atlases.emplace_back(4, 6, 23, 100.0); // ATLAS2
+    atlases.at(TextureManager::TextureID::ATLAS0) = Atlas(5, 11, 55);
+    atlases.at(TextureManager::TextureID::ATLAS1) = Atlas(4, 6, 23);
+    atlases.at(TextureManager::TextureID::ATLAS2) = Atlas(4, 6, 23);
 
     changeAtlas(currentTexture);
 
-    /*music.openFromFile(Util::getExecutablePath() / "assets/music.wav");*/
-    /*music.setLoop(true);*/
-    /*music.play();*/
+    music.openFromFile(Util::getExecutablePath() / "assets/music.ogg");
+    music.setLoop(true);
+
+    sf::Thread musicThread(std::bind(&sf::Music::play, &music));
+    musicThread.launch();
+
+}
+
+void Background::playMusic() {
+    music.play();
 }
 
 void Background::update(const sf::Time& deltaTime, const Car& car) {
@@ -85,6 +93,8 @@ void Background::changeAtlas(TextureManager::TextureID textureID) {
     sprite.setTexture(texManager.getTexture(textureID));
 
     auto& atlas = atlases.at(currentTexture);
+
+    if(!atlas.cols || !atlas.rows) return;
 
     if(!atlas.tileWidth) atlas.tileWidth = sprite.getTexture()->getSize().x / atlas.cols;
     if(!atlas.tileHeight) atlas.tileHeight = sprite.getTexture()->getSize().y / atlas.rows;
