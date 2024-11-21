@@ -21,7 +21,6 @@ private:
     };
 
     sf::Sprite sprite;
-    sf::Music music;
     TextureID currentTexture;
     std::vector<Atlas> atlases;
 
@@ -37,7 +36,6 @@ public:
     void update(const sf::Time& deltaTime, const Car& car);
     void handleEvents(const sf::Event& event);
 
-    void playMusic();
     void changeAtlas(TextureID id);
 
     Background();

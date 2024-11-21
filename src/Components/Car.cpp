@@ -23,10 +23,6 @@ static float INITIAL_POSITION_X = 0.5f;
 static float INITIAL_POSITION_Y = 0.9f;
 static float INITIAL_SCALE_X = 0.2f;
 static float INITIAL_SCALE_Y = 0.2f;
-
-    static float rot_x = 0.0f;
-    static float o_x = 0.0f;
-    static float o_y = 0.0f;
 }
 
 Car::Car()

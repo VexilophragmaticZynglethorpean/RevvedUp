@@ -16,10 +16,10 @@ class PlayState : public State
   public:
     PlayState();
 
+    void init() override;
     void update(const sf::Time& deltaTime) override;
     void render(sf::RenderTarget& target) override;
-
-    void init() override;
+    void handleEvents(const sf::Event& event) override;
     void exit() override;
 };
 

@@ -55,3 +55,7 @@ void SoundManager::playSounds() {
         }
     }
 }
+
+sf::Music& SoundManager::getMusic() {
+    return music;
+}

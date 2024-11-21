@@ -13,7 +13,7 @@ enum class SoundID {
     TWO,
     ONE,
     GO,
-    SOUND_COUNT // This should always be the last element
+    SOUND_COUNT
 };
 
 class SoundManager {
@@ -21,11 +21,13 @@ public:
     static SoundManager& getInstance();
     void loadSound(SoundID id, const std::string& filePath);
     void playSound(SoundID id);
+    sf::Music& getMusic();
 
 private:
     SoundManager();
     void playSounds();
 
+    sf::Music music;
     std::vector<sf::SoundBuffer> soundBuffers;
     std::queue<SoundID> soundQueue;
     sf::Thread soundThread;

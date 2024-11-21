@@ -1,7 +1,8 @@
 #include "Core/TextureManager.h"
 #include <cstddef>
 
-TextureManager::TextureManager() : textures(static_cast<std::size_t>(TextureID::TEXTURE_COUNT)) {}
+TextureManager::TextureManager() : textures(static_cast<std::size_t>(TextureID::TEXTURE_COUNT)) {
+}
 
 TextureManager&
 TextureManager::getInstance()
@@ -27,4 +28,8 @@ TextureManager::loadTexture(const TextureID id, const std::filesystem::path& fil
     sf::Texture texture;
     texture.loadFromFile(filePath);
     textures.at(ID) = std::move(texture);
+}
+
+sf::RenderTexture& TextureManager::getRenderTexture() {
+    return renderTexture;
 }

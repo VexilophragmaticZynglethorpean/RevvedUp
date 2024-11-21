@@ -1,11 +1,10 @@
 #include "Components/Background.h"
 #include "Core/WindowManager.h"
 #include "Core/TextureManager.h"
-#include "Util/Path.h"
 
 constexpr std::size_t NO_OF_ATLASES = 3;
 
-Background::Background() : currentRow(0), currentCol(0), currentFrame(0), currentTime(0.0), atlases(3), currentTexture(TextureID::ATLAS0), music() {
+Background::Background() : currentRow(0), currentCol(0), currentFrame(0), currentTime(0.0), atlases(3), currentTexture(TextureID::ATLAS0) {
 }
 
 void Background::init() {
@@ -14,9 +13,6 @@ void Background::init() {
     atlases.at(static_cast<std::size_t>(TextureID::ATLAS2)) = Atlas(4, 6, 23, 100.0);
 
     changeAtlas(currentTexture);
-
-    music.openFromFile(Util::getExecutablePath() / "assets/music.ogg");
-    music.setLoop(true);
 }
 
 void Background::update(const sf::Time& deltaTime, const Car& car) {
@@ -44,10 +40,6 @@ void Background::handleEvents(const sf::Event& event) {
         static_cast<float>(event.size.width) / sprite.getTextureRect().getSize().x,
         static_cast<float>(event.size.height) / sprite.getTextureRect().getSize().y
     );
-}
-
-void Background::playMusic() {
-    music.play();
 }
 
 void Background::incrementFrame() {

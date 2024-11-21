@@ -18,7 +18,7 @@ class State
     virtual void init() = 0;
     virtual void update(const sf::Time& deltaTime) = 0;
     virtual void render(sf::RenderTarget& target) = 0;
-
+    virtual void handleEvents(const sf::Event& event) = 0;
     virtual void exit() = 0;
 };
 

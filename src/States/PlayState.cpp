@@ -1,13 +1,16 @@
 #include "Core/EventManager.h"
 #include "Core/TextureManager.h"
 #include "Core/WindowManager.h"
+#include "Core/StateManager.h"
 #include "Core/SoundManager.h"
 #include "States/PlayState.h"
+#include "States/PauseState.h"
 #include "SFML/Graphics/RenderTarget.hpp"
 #include "Util/Path.h"
 #include "SFML/Window/Event.hpp"
 #include <functional>
 #include <cstdlib>
+#include <memory>
 
 #ifdef DEV_PHASE
 #include <imgui.h>
@@ -37,6 +40,9 @@ PlayState::init()
     soundManager.loadSound(SoundID::ONE, Util::getExecutablePath() / "assets/one.wav");
     soundManager.loadSound(SoundID::GO, Util::getExecutablePath() / "assets/go.wav");
 
+    soundManager.getMusic().openFromFile(Util::getExecutablePath() / "assets/music.ogg");
+    soundManager.getMusic().setLoop(true);
+
     eventManager.addListener(
       StateID::Play, sf::Event::Resized, std::bind(&WindowManager::resizeWindow, std::placeholders::_1));
 
@@ -44,7 +50,11 @@ PlayState::init()
       StateID::Play, sf::Event::KeyPressed, std::bind(&WindowManager::toggleFullScreen, std::placeholders::_1));
 
     eventManager.addListener(
-      StateID::Play, sf::Event::Closed, std::bind(&PlayState::exit, this));
+      StateID::Play, sf::Event::Closed, std::bind(&PlayState::handleEvents, this, std::placeholders::_1));
+
+
+    eventManager.addListener(
+      StateID::Play, sf::Event::KeyPressed, std::bind(&PlayState::handleEvents, this, std::placeholders::_1));
 
     eventManager.addListener(
       StateID::Play,
@@ -69,7 +79,8 @@ PlayState::init()
     soundManager.playSound(SoundID::TWO);
     soundManager.playSound(SoundID::ONE);
     soundManager.playSound(SoundID::GO);
-    background.playMusic();
+
+    soundManager.getMusic().play();
 }
 
 void
@@ -84,6 +95,25 @@ PlayState::render(sf::RenderTarget& target)
 {
     target.draw(background);
     target.draw(car);
+}
+
+void PlayState::handleEvents(const sf::Event& event) {
+    switch (event.type) {
+        case sf::Event::KeyPressed:
+            switch (event.key.code) {
+                case sf::Keyboard::Escape:
+                    StateManager::getInstance().pushState(std::make_unique<PauseState>());
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case sf::Event::Closed:
+            WindowManager::getWindow().close();
+            break;
+        default:
+            break;
+    }
 }
 
 void

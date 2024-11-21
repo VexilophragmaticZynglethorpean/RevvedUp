@@ -36,9 +36,6 @@ main()
             ImGui::SFML::ProcessEvent(window, event);
 #endif
 
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
         }
 
 #ifdef DEV_PHASE
