@@ -38,11 +38,7 @@ void PlayerCar::handleEvents(const sf::Event& event)
 {
     if (event.type == sf::Event::Resized) {
         sprite.setPosition(positionPercentage.x * event.size.width, positionPercentage.y * event.size.height);
-        sprite.setScale(
-            INITIAL_SCALE_X * static_cast<float>(event.size.width) / sprite.getTextureRect().getSize().x,
-            INITIAL_SCALE_Y * static_cast<float>(event.size.height) / sprite.getTextureRect().getSize().y
-        );
-        return;
+        resizeWithWindow(event.size.width, event.size.height, INITIAL_SCALE_X, INITIAL_SCALE_Y);
     }
 
     bool pressed = event.type != sf::Event::KeyReleased;

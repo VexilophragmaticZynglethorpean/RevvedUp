@@ -20,6 +20,14 @@ class Car
     virtual void init() = 0;
     virtual void update(const sf::Time& deltaTime) = 0;
 
+void resizeWithWindow(float newWindowWidth, float newWindowHeight, float initialScaleX, float initialScaleY) {
+        sprite.setScale(
+            initialScaleX * static_cast<float>(newWindowWidth) / sprite.getTextureRect().getSize().x,
+            initialScaleY * static_cast<float>(newWindowHeight) / sprite.getTextureRect().getSize().y
+        );
+}
+
+
     float getForwardVelocity() const {
         return forwardVelocity;
     }
