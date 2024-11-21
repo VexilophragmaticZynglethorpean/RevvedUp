@@ -15,20 +15,20 @@ void Background::init() {
     changeAtlas(currentTexture);
 }
 
-void Background::update(const sf::Time& deltaTime, const Car& car) {
+void Background::update(const sf::Time& deltaTime, const PlayerCar& car) {
     currentTime += deltaTime.asMilliseconds();
 
     auto& atlas = atlases.at(static_cast<std::size_t>(currentTexture));
 
-    if (!car.forwardVelocity || !atlas.frameDurationConstant) return;
-    auto frameDuration = atlas.frameDurationConstant / std::abs(car.forwardVelocity);
+    if (!car.getForwardVelocity() || !atlas.frameDurationConstant) return;
+    auto frameDuration = atlas.frameDurationConstant / std::abs(car.getForwardVelocity());
 
     if (currentTime < frameDuration) return;
     currentTime -= frameDuration;
 
-    if (car.forwardVelocity > 0)
+    if (car.getForwardVelocity() > 0)
         incrementFrame();
-    else if (car.forwardVelocity < 0)
+    else if (car.getForwardVelocity() < 0)
         decrementFrame();
 
 

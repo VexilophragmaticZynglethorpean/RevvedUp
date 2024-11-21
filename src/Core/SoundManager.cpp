@@ -19,7 +19,6 @@ void SoundManager::playSound(SoundID id) {
         std::lock_guard<std::mutex> lock(queueMutex);
         soundQueue.push(id);
     }
-    
     {
         std::lock_guard<std::mutex> lock(isPlayingMutex);
         if (!isPlaying) {
@@ -51,6 +50,15 @@ void SoundManager::playSounds() {
         sound.play();
 
         while (sound.getStatus() == sf::Sound::Playing) {
+            {
+                if (isPaused) {
+                    sound.pause();
+                    while (isPaused) {
+                        sf::sleep(sf::milliseconds(100));
+                    }
+                    sound.play();
+                }
+            }
             sf::sleep(sf::milliseconds(100));
         }
     }
@@ -58,4 +66,18 @@ void SoundManager::playSounds() {
 
 sf::Music& SoundManager::getMusic() {
     return music;
+}
+
+void SoundManager::clearQueue() {
+    std::lock_guard<std::mutex> lock(queueMutex);
+    std::queue<SoundID> emptyQueue;
+    std::swap(soundQueue, emptyQueue);
+}
+
+void SoundManager::pauseSound() {
+    isPaused = true;
+}
+
+void SoundManager::resumeSound() {
+        isPaused = false;
 }

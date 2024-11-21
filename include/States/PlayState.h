@@ -1,16 +1,16 @@
 #ifndef PLAY_STATE_H
 #define PLAY_STATE_H
 
-#include "Components/Car.h"
+#include "Components/PlayerCar.h"
 #include "Components/Background.h"
-#include "Core/State.h"
+#include "Core/IState.h"
 #include "SFML/Graphics/RenderTarget.hpp"
 #include <SFML/Audio.hpp>
 
 class PlayState : public State
 {
   private:
-    Car car;
+    PlayerCar car;
     Background background;
 
   public:
@@ -21,6 +21,8 @@ class PlayState : public State
     void render(sf::RenderTarget& target) override;
     void handleEvents(const sf::Event& event) override;
     void exit() override;
+
+    void snapshot(sf::RenderTexture& renderTexture);
 };
 
 #endif // PLAY_STATE_H

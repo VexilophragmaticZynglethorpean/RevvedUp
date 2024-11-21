@@ -1,4 +1,4 @@
-#include "Components/Car.h"
+#include "Components/PlayerCar.h"
 #include "Core/WindowManager.h"
 #include "Core/TextureManager.h"
 #include "SFML/System/Vector2.hpp"
@@ -25,17 +25,16 @@ static float INITIAL_SCALE_X = 0.2f;
 static float INITIAL_SCALE_Y = 0.2f;
 }
 
-Car::Car()
-  : forwardVelocity(0.0f)
-  , forwardMovement(false)
+PlayerCar::PlayerCar()
+  : forwardMovement(false)
   , backwardMovement(false)
   , leftMovement(false)
   , rightMovement(false)
-  , positionPercentage(sf::Vector2f(INITIAL_POSITION_X, INITIAL_POSITION_Y))
+  , Car(0.0f, sf::Vector2f(INITIAL_POSITION_X, INITIAL_POSITION_Y))
 {
 }
 
-void Car::handleEvents(const sf::Event& event)
+void PlayerCar::handleEvents(const sf::Event& event)
 {
     if (event.type == sf::Event::Resized) {
         sprite.setPosition(positionPercentage.x * event.size.width, positionPercentage.y * event.size.height);
@@ -53,7 +52,7 @@ void Car::handleEvents(const sf::Event& event)
     rightMovement = (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) ? pressed : rightMovement;
 }
 
-void Car::init()
+void PlayerCar::init()
 {
     auto& window = WindowManager::getWindow();
     auto& texManager = TextureManager::getInstance();
@@ -67,10 +66,10 @@ void Car::init()
     positionPercentage = sf::Vector2f(INITIAL_POSITION_X, INITIAL_POSITION_Y);
 }
 
-void Car::update(const sf::Time& deltaTime)
+void PlayerCar::update(const sf::Time& deltaTime)
 {
-    calcVelocity(deltaTime);
-    calcPosition(deltaTime);
+    updateVelocity(deltaTime);
+    updatePosition(deltaTime);
 
 #ifdef DEV_PHASE
     ImGui::Begin("Debug");
@@ -93,14 +92,14 @@ void Car::update(const sf::Time& deltaTime)
 #endif
 }
 
-void Car::calcVelocity(const sf::Time& deltaTime)
+void PlayerCar::updateVelocity(const sf::Time& deltaTime)
 {
     if (forwardMovement) forwardVelocity = std::min(forwardVelocity + FORWARD_INCREMENT, MAX_VELOCITY);
     if (backwardMovement) forwardVelocity = std::max(forwardVelocity - BACKWARD_DECREMENT, -MAX_VELOCITY);
     if (!forwardMovement && !backwardMovement) forwardVelocity *= (1.0f - DAMPING);
 }
 
-void Car::calcPosition(const sf::Time& deltaTime)
+void PlayerCar::updatePosition(const sf::Time& deltaTime)
 {
     auto windowSize = WindowManager::getWindow().getSize();
 
@@ -122,7 +121,7 @@ void Car::calcPosition(const sf::Time& deltaTime)
 }
 
 bool
-Car::intersectsBoundaries(const sf::FloatRect& boundary)
+PlayerCar::intersectsBoundaries(const sf::FloatRect& boundary)
 {
     auto spriteBounds = sprite.getGlobalBounds();
 
@@ -138,7 +137,7 @@ Car::intersectsBoundaries(const sf::FloatRect& boundary)
 }
 
 void
-Car::draw(sf::RenderTarget& target, sf::RenderStates states) const
+PlayerCar::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     target.draw(sprite);
 }

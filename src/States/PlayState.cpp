@@ -17,10 +17,10 @@
 #endif
 
 PlayState::PlayState()
-  : car()
+    : State(StateID::Play)
+  , car()
   , background()
 {
-    id = StateID::Play;
 }
 
 void
@@ -59,15 +59,15 @@ PlayState::init()
     eventManager.addListener(
       StateID::Play,
       sf::Event::KeyPressed,
-      std::bind(&Car::handleEvents, &car, std::placeholders::_1));
+      std::bind(&PlayerCar::handleEvents, &car, std::placeholders::_1));
 
     eventManager.addListener(
       StateID::Play,
       sf::Event::KeyReleased,
-      std::bind(&Car::handleEvents, &car, std::placeholders::_1));
+      std::bind(&PlayerCar::handleEvents, &car, std::placeholders::_1));
 
     eventManager.addListener(
-      StateID::Play, sf::Event::Resized, std::bind(&Car::handleEvents, &car, std::placeholders::_1));
+      StateID::Play, sf::Event::Resized, std::bind(&PlayerCar::handleEvents, &car, std::placeholders::_1));
 
     eventManager.addListener(
       StateID::Play, sf::Event::Resized, std::bind(&Background::handleEvents, &background, std::placeholders::_1));
@@ -97,11 +97,19 @@ PlayState::render(sf::RenderTarget& target)
     target.draw(car);
 }
 
+void PlayState::snapshot(sf::RenderTexture& renderTexture) {
+    auto windowSize = WindowManager::getWindow().getSize();
+    renderTexture.create(windowSize.x, windowSize.y);
+    render(renderTexture);
+    renderTexture.display();
+}
+
 void PlayState::handleEvents(const sf::Event& event) {
     switch (event.type) {
         case sf::Event::KeyPressed:
             switch (event.key.code) {
                 case sf::Keyboard::Escape:
+                    snapshot(TextureManager::getInstance().getRenderTexture());
                     StateManager::getInstance().pushState(std::make_unique<PauseState>());
                     break;
                 default:

@@ -1,7 +1,7 @@
 #ifndef PAUSESTATE_H
 #define PAUSESTATE_H
 
-#include "Core/State.h"
+#include "Core/IState.h"
 
 class PauseState : public State {
 private:
@@ -10,7 +10,8 @@ private:
     sf::Font font;
   
 public:
-    PauseState() = default;
+    PauseState();
+
     void init() override;
     void update(const sf::Time& deltaTime) override;
     void render(sf::RenderTarget& target) override;

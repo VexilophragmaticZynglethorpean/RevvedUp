@@ -7,7 +7,11 @@
 #include "Util/Path.h"
 #include <SFML/Graphics.hpp>
 #include <functional>
-#include <iostream>
+
+PauseState::PauseState()
+: State(StateID::Pause)
+{
+}
 
 void PauseState::init() {
     auto& eventManager = EventManager::getInstance();
@@ -15,9 +19,10 @@ void PauseState::init() {
     auto windowSize = WindowManager::getWindow().getSize();
 
     soundManager.getMusic().pause();
+    soundManager.pauseSound();
 
     overlay.setSize(sf::Vector2f(windowSize.x, windowSize.y));
-    overlay.setFillColor(sf::Color(0, 0, 0, 150));
+    overlay.setFillColor(sf::Color(0, 0, 0, 230));
 
     font.loadFromFile(Util::getExecutablePath() / "assets/SuperchargeHalftone.otf");
 
@@ -40,13 +45,21 @@ void PauseState::update(const sf::Time& deltaTime) {
 
 void PauseState::render(sf::RenderTarget& target) {
     auto& snapshot = TextureManager::getInstance().getRenderTexture();
-
+    sf::Sprite snapshotSprite(snapshot.getTexture());
+    target.draw(snapshotSprite);
     target.draw(overlay);
     target.draw(pauseText);
 }
 
 void PauseState::exit() {
-    SoundManager::getInstance().getMusic().play();
+    auto& eventManager = EventManager::getInstance();
+    auto& soundManager = SoundManager::getInstance();
+
+    eventManager.removeAllListeners(StateID::Pause, sf::Event::KeyPressed);
+    eventManager.removeAllListeners(StateID::Pause, sf::Event::Closed);
+
+    soundManager.resumeSound();
+    soundManager.getMusic().play();
 }
 
 void PauseState::handleEvents(const sf::Event& event) {
@@ -54,7 +67,6 @@ void PauseState::handleEvents(const sf::Event& event) {
         case sf::Event::KeyPressed:
             switch (event.key.code) {
                 case sf::Keyboard::Escape:
-                    std::clog << "unpause";
                     StateManager::getInstance().popState();
                     break;
                 default:

@@ -20,7 +20,12 @@ class SoundManager {
 public:
     static SoundManager& getInstance();
     void loadSound(SoundID id, const std::string& filePath);
+    void clearQueue();
+
     void playSound(SoundID id);
+    void resumeSound();
+    void pauseSound();
+
     sf::Music& getMusic();
 
 private:
@@ -29,11 +34,16 @@ private:
 
     sf::Music music;
     std::vector<sf::SoundBuffer> soundBuffers;
-    std::queue<SoundID> soundQueue;
+
     sf::Thread soundThread;
+
     std::mutex queueMutex;
-    std::mutex isPlayingMutex; // Mutex for isPlaying
+    std::queue<SoundID> soundQueue;
+
+    std::mutex isPlayingMutex;
     bool isPlaying;
+
+    bool isPaused;
 };
 
 #endif // SOUNDMANAGER_H

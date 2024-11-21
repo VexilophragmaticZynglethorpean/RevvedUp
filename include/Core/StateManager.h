@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <stack>
-#include "Core/State.h"
+#include "Core/IState.h"
 #include "Core/StateID.h"
 #include "SFML/Graphics/RenderTarget.hpp"
 #include <SFML/Graphics.hpp>

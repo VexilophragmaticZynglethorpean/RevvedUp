@@ -16,6 +16,8 @@ class EventManager
     void addListener(const StateID state,
                      sf::Event::EventType eventType,
                      EventCallback callback);
+
+void removeAllListeners(const StateID state, sf::Event::EventType eventType);
     void handleEvent(const StateID state, const sf::Event& event);
 
     EventManager(const EventManager&) = delete;

@@ -11,6 +11,7 @@ class State
     StateID id;
 
   public:
+    explicit State(StateID stateId) : id(stateId) {}
     virtual ~State() = default;
 
     StateID getID() const { return id; }

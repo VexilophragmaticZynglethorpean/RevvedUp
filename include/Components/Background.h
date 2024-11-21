@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "Components/Car.h"
+#include "Components/PlayerCar.h"
 #include "Core/TextureManager.h"
 
 class Background 
@@ -33,7 +33,7 @@ private:
 
 public:
     void init();
-    void update(const sf::Time& deltaTime, const Car& car);
+    void update(const sf::Time& deltaTime, const PlayerCar& car);
     void handleEvents(const sf::Event& event);
 
     void changeAtlas(TextureID id);
