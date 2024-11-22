@@ -4,6 +4,7 @@
 #include "Core/StateManager.h"
 #include "Core/SoundManager.h"
 #include "States/PlayState.h"
+#include "SFML/System/Vector2.hpp"
 #include "States/PauseState.h"
 #include "Util/Path.h"
 #include "Components/Jeep.h"
@@ -14,6 +15,10 @@
 #ifdef DEV_PHASE
 #include <imgui.h>
 #endif
+
+static sf::Vector2f scale(1.0f, 1.0f);
+static sf::Vector2f position(100.0f, 100.0f);
+static float rotation = 0.0f; 
 
 PlayState::PlayState()
     : State(StateID::Play)
@@ -35,10 +40,10 @@ PlayState::init()
     textureManager.loadTexture(TextureID::JEEP, Util::getExecutablePath() / "assets/jeep.png");
     textureManager.loadTexture(TextureID::CAR0, Util::getExecutablePath() / "assets/car0.png");
 
-    soundManager.loadSound(SoundID::THREE, Util::getExecutablePath() / "assets/three.wav");
-    soundManager.loadSound(SoundID::TWO, Util::getExecutablePath() / "assets/two.wav");
-    soundManager.loadSound(SoundID::ONE, Util::getExecutablePath() / "assets/one.wav");
-    soundManager.loadSound(SoundID::GO, Util::getExecutablePath() / "assets/go.wav");
+    soundManager.loadSound(SoundID::THREE, Util::getExecutablePath() / "assets/three.ogg");
+    soundManager.loadSound(SoundID::TWO, Util::getExecutablePath() / "assets/two.ogg");
+    soundManager.loadSound(SoundID::ONE, Util::getExecutablePath() / "assets/one.ogg");
+    soundManager.loadSound(SoundID::GO, Util::getExecutablePath() / "assets/go.ogg");
 
     soundManager.getMusic().openFromFile(Util::getExecutablePath() / "assets/music.ogg");
     soundManager.getMusic().setLoop(true);
@@ -82,8 +87,10 @@ PlayState::init()
 
     soundManager.getMusic().play();
 
-    for(auto jeep : jeeps) {}
+    /*Jeep(sf::Vector2f spawnPoint = sf::Vector2f(0.0f, 0.0f), sf::Vector2f endPosition = sf::Vector2f(0.0f, 0.0f), sf::Vector2f fullScale = sf::Vector2f(0.0f, 0.0f));*/
+    Jeep jeep(sf::Vector2f(0,0), sf::Vector2f(800.0f, 800.0f), sf::Vector2f(2.0, 2.0));
     jeep.init();
+    traffic.push_back(std::move(jeep));
 }
 
 void
@@ -91,7 +98,35 @@ PlayState::update(const sf::Time& deltaTime)
 {
     car.update(deltaTime);
     background.update(deltaTime, car);
-    jeep.update(deltaTime);
+
+    for (auto& jeep : traffic) {
+        jeep.update(deltaTime);
+    }
+    
+        /*ImGui::Begin("Transform Controls");*/
+        /**/
+        /*// Scale controls*/
+        /*ImGui::Text("Scale");*/
+        /*ImGui::SliderFloat("Scale X", &scale.x, 0.1f, 5.0f);*/
+        /*ImGui::SliderFloat("Scale Y", &scale.y, 0.1f, 5.0f);*/
+        /**/
+        /*// Position controls*/
+        /*ImGui::Text("Position");*/
+        /*ImGui::SliderFloat("Position X", &position.x, 0.0f, WindowManager::getWindow().getSize().x);*/
+        /*ImGui::SliderFloat("Position Y", &position.y, 0.0f, WindowManager::getWindow().getSize().y);*/
+        /**/
+        /*// Rotation controls*/
+        /*ImGui::Text("Rotation");*/
+        /*ImGui::SliderFloat("Rotation", &rotation, 0.0f, 360.0f);*/
+        /**/
+        /*ImGui::End();*/
+
+    traffic.at(0).
+        sprite.setScale(scale);
+    traffic.at(0).
+        sprite.setPosition(position);
+    traffic.at(0).
+        sprite.setRotation(rotation);
 }
 
 void
@@ -99,7 +134,10 @@ PlayState::render(sf::RenderTarget& target)
 {
     target.draw(background);
     target.draw(car);
-    target.draw(jeep);
+
+    for (auto& jeep : traffic) {
+        target.draw(jeep);
+    }
 }
 
 void PlayState::snapshot(sf::RenderTexture& renderTexture) {

@@ -8,12 +8,12 @@ class Car
 {
   protected:
 
-    sf::Sprite sprite;
     float forwardVelocity;
 
     sf::Vector2f positionPercentage;
 
   public:
+    sf::Sprite sprite;
     explicit Car(float forwardVelocity, sf::Vector2f positionPercentage) : forwardVelocity(forwardVelocity), positionPercentage(positionPercentage) {}
     virtual ~Car() = default;
 

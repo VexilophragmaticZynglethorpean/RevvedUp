@@ -6,14 +6,14 @@
 #include "Components/Background.h"
 #include "Core/IState.h"
 #include <SFML/Audio.hpp>
-#include <stack>
+#include <deque>
 
 class PlayState : public State
 {
   private:
     PlayerCar car;
     Background background;
-    std::stack<Jeep> traffic;
+    std::deque<Jeep> traffic;
 
   public:
     PlayState();
