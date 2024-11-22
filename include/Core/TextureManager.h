@@ -11,6 +11,7 @@
         ATLAS0,
         ATLAS1,
         ATLAS2,
+        JEEP,
         CAR0,
         TEXTURE_COUNT
     };

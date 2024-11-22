@@ -5,9 +5,8 @@
 #include "Core/SoundManager.h"
 #include "States/PlayState.h"
 #include "States/PauseState.h"
-#include "SFML/Graphics/RenderTarget.hpp"
 #include "Util/Path.h"
-#include "SFML/Window/Event.hpp"
+#include "Components/Jeep.h"
 #include <functional>
 #include <cstdlib>
 #include <memory>
@@ -33,6 +32,7 @@ PlayState::init()
     textureManager.loadTexture(TextureID::ATLAS0, Util::getExecutablePath() / "assets/atlas0.png");
     textureManager.loadTexture(TextureID::ATLAS1, Util::getExecutablePath() / "assets/atlas1.png");
     textureManager.loadTexture(TextureID::ATLAS2, Util::getExecutablePath() / "assets/atlas2.png");
+    textureManager.loadTexture(TextureID::JEEP, Util::getExecutablePath() / "assets/jeep.png");
     textureManager.loadTexture(TextureID::CAR0, Util::getExecutablePath() / "assets/car0.png");
 
     soundManager.loadSound(SoundID::THREE, Util::getExecutablePath() / "assets/three.wav");
@@ -81,6 +81,9 @@ PlayState::init()
     soundManager.playSound(SoundID::GO);
 
     soundManager.getMusic().play();
+
+    for(auto jeep : jeeps) {}
+    jeep.init();
 }
 
 void
@@ -88,6 +91,7 @@ PlayState::update(const sf::Time& deltaTime)
 {
     car.update(deltaTime);
     background.update(deltaTime, car);
+    jeep.update(deltaTime);
 }
 
 void
@@ -95,6 +99,7 @@ PlayState::render(sf::RenderTarget& target)
 {
     target.draw(background);
     target.draw(car);
+    target.draw(jeep);
 }
 
 void PlayState::snapshot(sf::RenderTexture& renderTexture) {

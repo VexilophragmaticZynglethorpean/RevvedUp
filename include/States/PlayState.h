@@ -2,16 +2,18 @@
 #define PLAY_STATE_H
 
 #include "Components/PlayerCar.h"
+#include "Components/Jeep.h"
 #include "Components/Background.h"
 #include "Core/IState.h"
-#include "SFML/Graphics/RenderTarget.hpp"
 #include <SFML/Audio.hpp>
+#include <stack>
 
 class PlayState : public State
 {
   private:
     PlayerCar car;
     Background background;
+    std::stack<Jeep> traffic;
 
   public:
     PlayState();
