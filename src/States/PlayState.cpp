@@ -7,7 +7,6 @@
 #include "SFML/System/Vector2.hpp"
 #include "States/PauseState.h"
 #include "Util/Path.h"
-#include "Components/Jeep.h"
 #include <functional>
 #include <cstdlib>
 #include <memory>
@@ -24,7 +23,7 @@ PlayState::PlayState()
     : State(StateID::Play)
   , car()
   , background()
-, trafficSpawner(0.51, 0.55, 0.56, 5.0f, sf::Vector2f(2.5, 2.5), 1.0f)
+, traffic(0.51, 0.55, 0.56, 5.0f, sf::Vector2f(2.5, 2.5), 1.0f)
 {
 }
 
@@ -95,8 +94,7 @@ PlayState::update(const sf::Time& deltaTime)
 {
     car.update(deltaTime);
     background.update(deltaTime, car);
-
-    trafficSpawner.update(deltaTime);
+    /*traffic.update(deltaTime);*/
 }
 
 void
@@ -104,10 +102,7 @@ PlayState::render(sf::RenderTarget& target)
 {
     target.draw(background);
     target.draw(car);
-
-    for (auto& jeep : trafficSpawner.getTraffic()) {
-        target.draw(jeep);
-    }
+    /*traffic.draw(target);*/
 }
 
 void PlayState::snapshot(sf::RenderTexture& renderTexture) {

@@ -2,7 +2,8 @@
 #include "Core/WindowManager.h"
 #include "Core/EventManager.h"
 #include "Core/StateManager.h"
-#include "States/PlayState.h"
+#include "States/MenuState.h"
+/*#include "States/PlayState.h"*/
 
 #ifdef DEV_PHASE
 #include <imgui-SFML.h>
@@ -24,7 +25,7 @@ main()
 
     WindowManager::getClock();
 
-    stateManager.pushState(std::make_unique<PlayState>());
+    stateManager.pushState(std::make_unique<MenuState>());
 
     while (window.isOpen()) {
         sf::Event event;

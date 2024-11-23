@@ -7,7 +7,11 @@ enum class StateID
 {
     Default,
     Play,
-    Pause
+    Pause,
+    Menu,
+    HowToPlay,
+    HighScores,
+    Settings
 };
 
 struct StateHash

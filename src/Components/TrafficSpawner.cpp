@@ -19,22 +19,14 @@ void TrafficSpawner::removeOutOfScreenTraffic() {
     }
 }
 
-void TrafficSpawner::updateTraffic(const sf::Time& deltaTime) {
-    std::lock_guard<std::mutex> lock(trafficMutex);
-    for (auto& jeep : traffic) {
-        jeep.update(deltaTime);
-    }
-}
-
 void TrafficSpawner::update(const sf::Time& deltaTime) {
     elapsedTime += deltaTime.asSeconds();
 
     removeOutOfScreenTraffic();
 
-    sf::Thread updateThread([this, deltaTime]() {
-            updateTraffic(deltaTime);
-    });
-    updateThread.launch();
+    for (auto& jeep : traffic) {
+        jeep.update(deltaTime);
+    }
 
     if (elapsedTime >= spawnInterval) {
         spawnTraffic();
@@ -63,7 +55,9 @@ void TrafficSpawner::spawnTraffic() {
     traffic.push_back(std::move(newJeep));
 }
 
-std::deque<Jeep>& TrafficSpawner::getTraffic() {
-    return traffic;
+void TrafficSpawner::draw(sf::RenderTarget& target){
+    for (auto& jeep : traffic) {
+        target.draw(jeep);
+    }
 }
 

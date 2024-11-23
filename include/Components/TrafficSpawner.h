@@ -3,7 +3,6 @@
 
 #include "Components/Jeep.h"
 #include <deque>
-#include <mutex>
 
 class TrafficSpawner {
 public:
@@ -11,7 +10,7 @@ public:
     
     void update(const sf::Time& deltaTime);
     void updateTraffic(const sf::Time& deltaTime); 
-    std::deque<Jeep>& getTraffic();
+    void draw(sf::RenderTarget& target);
 
 private:
     void spawnTraffic();
@@ -24,10 +23,10 @@ private:
     sf::Vector2f fullScale;
 
     std::deque<Jeep> traffic;
-    std::mutex trafficMutex;
 
     float spawnInterval;
     float elapsedTime;
+
 };
 
 #endif // TRAFFIC_SPAWNER_H

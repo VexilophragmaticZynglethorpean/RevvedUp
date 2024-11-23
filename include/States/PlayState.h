@@ -12,7 +12,7 @@ class PlayState : public State
   private:
     PlayerCar car;
     Background background;
-    TrafficSpawner trafficSpawner;
+    TrafficSpawner traffic;
 
   public:
     PlayState();
