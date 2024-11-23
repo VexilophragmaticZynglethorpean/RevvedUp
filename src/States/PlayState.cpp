@@ -4,7 +4,6 @@
 #include "Core/StateManager.h"
 #include "Core/SoundManager.h"
 #include "States/PlayState.h"
-#include "SFML/System/Vector2.hpp"
 #include "States/PauseState.h"
 #include "Util/Path.h"
 #include <functional>

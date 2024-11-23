@@ -7,6 +7,7 @@ class PauseState : public State {
 private:
     sf::RectangleShape overlay;
     sf::Text pauseText;
+    sf::Text instructionsText;
     sf::Font font;
   
 public:

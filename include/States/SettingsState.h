@@ -2,7 +2,6 @@
 #define SETTINGSSTATE_H
 
 #include "Core/IState.h"
-#include "Core/TextureManager.h"
 #include <SFML/Graphics.hpp>
 
 class SettingsState : public State {
@@ -19,7 +18,6 @@ private:
     sf::Sprite background;
     sf::RectangleShape overlay;
     void handleEvents(const sf::Event& event) override;
-    sf::Font font;
     sf::Text settingsText;
 
     std::size_t currentMap;

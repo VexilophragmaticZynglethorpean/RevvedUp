@@ -16,7 +16,6 @@ private:
     void handleEvents(const sf::Event& event) override;
     sf::Sprite background;
     sf::RectangleShape overlay;
-    sf::Font font;
     sf::Text instructionsText;
 };
 

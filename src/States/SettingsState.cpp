@@ -6,6 +6,8 @@
 #include <string>
 #include "Core/EventManager.h"
 #include "Core/WindowManager.h"
+#include "Core/FontManager.h"
+#include "Core/TextureManager.h"
 
 namespace {
 std::string settingsString = 
@@ -63,7 +65,7 @@ void SettingsState::init() {
     overlay.setSize(sf::Vector2f(windowSize.x, windowSize.y));
     overlay.setFillColor(sf::Color(0, 0, 0, 230));
 
-    font.loadFromFile(Util::getExecutablePath() / "assets/Sans.ttf");
+    auto& font = FontManager::getInstance().getFont(FontID::TEXT);
 
     settingsText.setFont(font);
     settingsText.setString(settingsString + std::to_string(currentMap));
@@ -72,6 +74,8 @@ void SettingsState::init() {
     settingsText.setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
     settingsText.setOrigin(settingsText.getLocalBounds().width / 2, settingsText.getLocalBounds().height / 2);
 
+    eventManager.addListener(
+      StateID::Settings, sf::Event::KeyPressed, std::bind(&WindowManager::toggleFullScreen, std::placeholders::_1));
     eventManager.addListener(StateID::Settings, sf::Event::KeyPressed, std::bind(&SettingsState::handleEvents, this, std::placeholders::_1));
     eventManager.addListener(StateID::Settings, sf::Event::Closed, std::bind(&SettingsState::handleEvents, this, std::placeholders::_1));
 }

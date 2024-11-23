@@ -3,7 +3,6 @@
 #include "Core/EventManager.h"
 #include "Core/StateManager.h"
 #include "States/MenuState.h"
-/*#include "States/PlayState.h"*/
 
 #ifdef DEV_PHASE
 #include <imgui-SFML.h>

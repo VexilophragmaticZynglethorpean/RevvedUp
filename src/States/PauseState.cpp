@@ -4,7 +4,7 @@
 #include "Core/WindowManager.h"
 #include "Core/StateManager.h"
 #include "Core/TextureManager.h"
-#include "Util/Path.h"
+#include "Core/FontManager.h"
 #include <SFML/Graphics.hpp>
 #include <functional>
 
@@ -24,17 +24,27 @@ void PauseState::init() {
     overlay.setSize(sf::Vector2f(windowSize.x, windowSize.y));
     overlay.setFillColor(sf::Color(0, 0, 0, 230));
 
-    font.loadFromFile(Util::getExecutablePath() / "assets/SuperchargeHalftone.otf");
+    auto& font = FontManager::getInstance().getFont(FontID::FANCY);
 
     pauseText.setFont(font);
     pauseText.setString("PAUSED");
     pauseText.setCharacterSize(50);
     pauseText.setFillColor(sf::Color::White);
-
     auto localBounds = pauseText.getLocalBounds();
-    pauseText.setOrigin(localBounds.width, localBounds.height);
+    pauseText.setOrigin(localBounds.width/2.0f, localBounds.height/2.0f);
     pauseText.setPosition(windowSize.x/2.0f, windowSize.y/2.0f);
 
+    instructionsText.setFont(font);
+    instructionsText.setString("Press Esc to unpause the game\nPress Ctrl+Esc to return to main menu");
+    instructionsText.setCharacterSize(30);
+    instructionsText.setFillColor(sf::Color::White);
+    instructionsText.setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f + 60);
+    auto instructionsLocalBounds = instructionsText.getLocalBounds();
+    instructionsText.setOrigin(instructionsLocalBounds.width / 2.0f, instructionsLocalBounds.height / 2.0f);
+
+
+    eventManager.addListener(
+      StateID::Pause, sf::Event::KeyPressed, std::bind(&WindowManager::toggleFullScreen, std::placeholders::_1));
     eventManager.addListener(StateID::Pause, sf::Event::KeyPressed, std::bind(&PauseState::handleEvents, this, std::placeholders::_1));
 
     eventManager.addListener(StateID::Pause, sf::Event::Closed, std::bind(&PauseState::handleEvents, this, std::placeholders::_1));
@@ -49,6 +59,7 @@ void PauseState::render(sf::RenderTarget& target) {
     target.draw(snapshotSprite);
     target.draw(overlay);
     target.draw(pauseText);
+    target.draw(instructionsText);
 }
 
 void PauseState::exit() {
@@ -68,6 +79,8 @@ void PauseState::handleEvents(const sf::Event& event) {
             switch (event.key.code) {
                 case sf::Keyboard::Escape:
                     StateManager::getInstance().popState();
+                    if (event.key.control)
+                        StateManager::getInstance().popState();
                     break;
                 default:
                     break;

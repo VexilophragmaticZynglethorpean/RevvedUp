@@ -19,7 +19,6 @@ private:
 
     sf::Sprite background;
     sf::RectangleShape overlay;
-    sf::Font font;
     sf::Text title;
     std::vector<sf::Text> buttons;
     std::vector<sf::RectangleShape> buttonBackgrounds;

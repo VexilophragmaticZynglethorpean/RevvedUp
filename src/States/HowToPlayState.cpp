@@ -5,7 +5,8 @@
 #include "Core/TextureManager.h"
 #include <functional>
 #include <string>
-#include "Util/Path.h"
+#include "Core/FontManager.h"
+
 
 namespace {
 std::string instructionsString = 
@@ -37,7 +38,7 @@ void HowToPlayState::init() {
     overlay.setSize(sf::Vector2f(windowSize.x, windowSize.y));
     overlay.setFillColor(sf::Color(0, 0, 0, 230));
 
-    font.loadFromFile(Util::getExecutablePath() / "assets/Sans.ttf");
+    auto& font = FontManager::getInstance().getFont(FontID::TEXT);
 
     instructionsText.setFont(font);
 instructionsText.setString(instructionsString);
@@ -46,6 +47,8 @@ instructionsText.setString(instructionsString);
     instructionsText.setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
     instructionsText.setOrigin(instructionsText.getLocalBounds().width / 2, instructionsText.getLocalBounds().height / 2);
 
+    eventManager.addListener(
+      StateID::HowToPlay, sf::Event::KeyPressed, std::bind(&WindowManager::toggleFullScreen, std::placeholders::_1));
     eventManager.addListener(StateID::HowToPlay, sf::Event::KeyPressed, std::bind(&HowToPlayState::handleEvents, this, std::placeholders::_1));
     eventManager.addListener(StateID::HowToPlay, sf::Event::Closed, std::bind(&HowToPlayState::handleEvents, this, std::placeholders::_1));
 }

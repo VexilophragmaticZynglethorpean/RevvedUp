@@ -1,4 +1,4 @@
-#include "Util/Path.h"
+#include "Core/FontManager.h"
 #include "Core/StateManager.h"
 #include "Core/EventManager.h"
 #include "Core/WindowManager.h"
@@ -26,7 +26,7 @@ void HighScoresState::init() {
     overlay.setSize(sf::Vector2f(windowSize.x, windowSize.y));
     overlay.setFillColor(sf::Color(0, 0, 0, 230));
 
-    font.loadFromFile(Util::getExecutablePath() / "assets/Sans.ttf");
+    auto& font = FontManager::getInstance().getFont(FontID::TEXT);
     highScoresText.setFont(font);
     highScoresText.setCharacterSize(30);
     highScoresText.setFillColor(sf::Color::White);
@@ -34,7 +34,8 @@ void HighScoresState::init() {
     highScoresText.setOrigin(highScoresText.getLocalBounds().width / 2, highScoresText.getLocalBounds().height / 2);
 
     loadHighScores();
-
+    eventManager.addListener(
+      StateID::HighScores, sf::Event::KeyPressed, std::bind(&WindowManager::toggleFullScreen, std::placeholders::_1));
     eventManager.addListener(StateID::HighScores, sf::Event::KeyPressed, std::bind(&HighScoresState::handleEvents, this, std::placeholders::_1));
     eventManager.addListener(StateID::HighScores, sf::Event::Closed, std::bind(&HighScoresState::handleEvents, this, std::placeholders::_1));
 }

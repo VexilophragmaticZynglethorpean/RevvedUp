@@ -16,7 +16,7 @@ TextureManager::getTexture(TextureID id)
 {
     std::size_t ID = static_cast<std::size_t>(id);
     if (ID < 0 || ID >= textures.size()) {
-        throw std::out_of_range("InvalID texture ID");
+        throw std::out_of_range("Invalid texture ID");
     }
     return textures.at(static_cast<std::size_t>(ID));
 }

@@ -20,7 +20,6 @@ private:
     
     sf::Sprite background;
     sf::RectangleShape overlay;
-    sf::Font font;
     sf::Text highScoresText;
     std::vector<std::string> highScores;
 };

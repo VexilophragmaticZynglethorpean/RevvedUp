@@ -1,13 +1,14 @@
 #include "States/MenuState.h"
+#include "Core/FontManager.h"
 #include "Core/TextureManager.h"
 #include "States/PlayState.h"
 #include "States/HowToPlayState.h"
 #include "States/SettingsState.h"
 #include "States/HighScoresState.h"
-
 #include "Core/EventManager.h"
 #include "Core/StateManager.h"
 #include "Core/WindowManager.h"
+#include "Util/Path.h"
 #include "Util/Path.h"
 #include <SFML/Graphics.hpp>
 #include <functional>
@@ -32,9 +33,11 @@ void MenuState::init() {
         static_cast<float>(windowSize.y) / background.getTexture()->getSize().y
     );
 
-    font.loadFromFile(Util::getExecutablePath() / "assets/PreschoolBits.ttf");
+    FontManager::getInstance().loadFont( FontID::TITLE, Util::getExecutablePath() / "assets/PreschoolBits.ttf");
+    FontManager::getInstance().loadFont( FontID::TEXT, Util::getExecutablePath() / "assets/Sans.ttf");
+    FontManager::getInstance().loadFont( FontID::FANCY, Util::getExecutablePath() / "assets/SuperchargeHalftone.otf");
 
-    // Create title
+    auto& font = FontManager::getInstance().getFont(FontID::TITLE);
     title.setFont(font);
     title.setString("Race");
     title.setCharacterSize(120);
@@ -42,7 +45,6 @@ void MenuState::init() {
     title.setPosition(windowSize.x / 2.0f, windowSize.y / 4.0f);
     title.setOrigin(title.getLocalBounds().width / 2, title.getLocalBounds().height / 2);
 
-    // Create buttons
     std::vector<std::string> buttonLabels = {"Play", "How to Play", "High Scores", "Settings"};
     for (size_t i = 0; i < buttonLabels.size(); ++i) {
         sf::Text buttonText;
@@ -62,7 +64,10 @@ void MenuState::init() {
         buttonBackgrounds.push_back(buttonBackground);
     }
 
+    eventManager.addListener(
+      StateID::Menu, sf::Event::KeyPressed, std::bind(&WindowManager::toggleFullScreen, std::placeholders::_1));
     eventManager.addListener(StateID::Menu, sf::Event::KeyPressed, std::bind(&MenuState::handleEvents, this, std::placeholders::_1));
+    eventManager.addListener(StateID::Menu, sf::Event::MouseButtonPressed, std::bind(&MenuState::handleEvents, this, std::placeholders::_1));
     eventManager.addListener(StateID::Menu, sf::Event::Closed, std::bind(&MenuState::handleEvents, this, std::placeholders::_1));
 }
 
@@ -86,6 +91,7 @@ void MenuState::render(sf::RenderTarget& target) {
 void MenuState::exit() {
     auto& eventManager = EventManager::getInstance();
     eventManager.removeAllListeners(StateID::Menu, sf::Event::KeyPressed);
+    eventManager.removeAllListeners(StateID::Menu, sf::Event::MouseButtonPressed);
     eventManager.removeAllListeners(StateID::Menu, sf::Event::Closed);
 }
 
