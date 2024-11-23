@@ -24,6 +24,7 @@ PlayState::PlayState()
     : State(StateID::Play)
   , car()
   , background()
+, trafficSpawner(0.51, 0.55, 0.56, 5.0f, sf::Vector2f(2.5, 2.5), 1.0f)
 {
 }
 
@@ -87,9 +88,6 @@ PlayState::init()
 
     soundManager.getMusic().play();
 
-    Jeep jeep(sf::Vector2f(0.51,0.56), sf::Vector2f(0.0f, 1.0f), 5.0f, sf::Vector2f(2.5, 2.5));
-    jeep.init();
-    traffic.push_back(std::move(jeep));
 }
 
 void
@@ -98,10 +96,7 @@ PlayState::update(const sf::Time& deltaTime)
     car.update(deltaTime);
     background.update(deltaTime, car);
 
-    for (auto& jeep : traffic) {
-        jeep.updateCarInfo(car);
-        jeep.update(deltaTime);
-    }
+    trafficSpawner.update(deltaTime);
 }
 
 void
@@ -110,7 +105,7 @@ PlayState::render(sf::RenderTarget& target)
     target.draw(background);
     target.draw(car);
 
-    for (auto& jeep : traffic) {
+    for (auto& jeep : trafficSpawner.getTraffic()) {
         target.draw(jeep);
     }
 }

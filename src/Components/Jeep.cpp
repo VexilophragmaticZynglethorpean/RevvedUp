@@ -8,27 +8,29 @@
 #include <imgui.h>
 #endif
 
-constexpr float INITIAL_SCALE_X = 0.0f;
-constexpr float INITIAL_SCALE_Y = 0.0f;
-constexpr float LERP_SPEED_CONST = 0.07f;
+constexpr float LERP_SPEED_CONST = 0.1f;
+constexpr float INITIAL_SCALE_X = 0.1f;
+constexpr float INITIAL_SCALE_Y = 0.1f;
+constexpr float MAX_ROTATION = 15.0f;
+constexpr float SCALE_SPEED = 0.2f;
 
-Jeep::Jeep(sf::Vector2f spawnPoint, sf::Vector2f endPosition, float forwardVelocity, sf::Vector2f fullScale) : Car(forwardVelocity, spawnPoint), endPosition(endPosition), fullScale(fullScale), dt(0.0f) {
+Jeep::Jeep(sf::Vector2f spawnPoint, sf::Vector2f endPosition, float forwardVelocity, sf::Vector2f fullScale) 
+    : Car(forwardVelocity, spawnPoint), endPosition(endPosition), fullScale(fullScale), dt(0.0f) {
 }
 
 sf::Vector2f Jeep::lerp(const sf::Vector2f& start, const sf::Vector2f& end, float t) {
     t = std::clamp(t, 0.0f, 1.0f);
-    return start +  (end - start) * static_cast<float>(std::pow(t, 2.0f));
+    return start + (end - start) * t * t;
 }
 
 float Jeep::lerp(float start, float end, float t) {
     t = std::clamp(t, 0.0f, 1.0f);
-    return start +  (end - start) * static_cast<float>(std::pow(t, 2.0f));
+    return start + (end - start) * t * t;
 }
 
 float Jeep::terp(float start, float end, float t) {
     t = std::clamp(t, 0.0f, 2.0f);
-    if (t <= 1.0f) return lerp(start, end, t);
-    return lerp(start, end, 1.0f-t);
+    return (t <= 1.0f) ? lerp(start, end, t) : lerp(start, end, 2.5f - t);
 }
 
 void Jeep::init() {
@@ -40,34 +42,31 @@ void Jeep::init() {
     auto windowSize = WindowManager::getWindow().getSize();
 
     sf::IntRect rect;
-    rect.left = distr(eng) * tex.getSize().x / 2;
+    rect.left = distr(eng) * (tex.getSize().x / 2);
     rect.top = 0;
     rect.width = tex.getSize().y;
     rect.height = tex.getSize().y;
 
     sprite.setTexture(tex);
     sprite.setTextureRect(rect);
-    sprite.setOrigin(tex.getSize().x/2.0f, tex.getSize().y);
+    sprite.setOrigin(tex.getSize().x / 2.0f, tex.getSize().y);
     sprite.setPosition(positionPercentage.x * windowSize.x, positionPercentage.y * windowSize.y);
     sprite.setScale(INITIAL_SCALE_X, INITIAL_SCALE_Y);
 }
-
-void Jeep::updateCarInfo(const PlayerCar& car) {
-    dt += car.getForwardVelocity();
+sf::Vector2f Jeep::getPosition() const {
+    return positionPercentage;
 }
 
 void Jeep::update(const sf::Time& deltaTime) {
     dt += LERP_SPEED_CONST * forwardVelocity * deltaTime.asSeconds();
-
     auto nextPosition = lerp(positionPercentage, endPosition, dt);
     auto currentScale = sprite.getScale();
 
     auto windowSize = WindowManager::getWindow().getSize();
     sprite.setPosition(nextPosition.x * windowSize.x, nextPosition.y * windowSize.y);
-    sprite.setScale(lerp(currentScale, fullScale, 0.2*dt));
-    sprite.setRotation(lerp(0.0f, 4.0f, dt));
-    sprite.setColor(sf::Color(255, 255, 255, terp(0, 255, 2*dt)));
-
+    sprite.setScale(lerp(currentScale, fullScale, SCALE_SPEED * dt));
+    sprite.setRotation(lerp(0.0f, MAX_ROTATION, 0.2f * dt));
+    sprite.setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(terp(0, 255, 2 * dt))));
 #ifdef DEV_PHASE
     ImGui::Begin("JEEP");
     ImGui::Text("Current scale %f %f", currentScale.x, currentScale.y);

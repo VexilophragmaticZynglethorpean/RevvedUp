@@ -2,18 +2,17 @@
 #define PLAY_STATE_H
 
 #include "Components/PlayerCar.h"
-#include "Components/Jeep.h"
 #include "Components/Background.h"
+#include "Components/TrafficSpawner.h"
 #include "Core/IState.h"
 #include <SFML/Audio.hpp>
-#include <deque>
 
 class PlayState : public State
 {
   private:
     PlayerCar car;
     Background background;
-    std::deque<Jeep> traffic;
+    TrafficSpawner trafficSpawner;
 
   public:
     PlayState();
