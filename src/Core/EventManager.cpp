@@ -15,12 +15,14 @@ EventManager::addListener(const StateID state,
     listeners[state][eventType].push_back(callback);
 }
 
-
-void EventManager::removeAllListeners(const StateID state, sf::Event::EventType eventType) {
-        auto state_it = listeners.find(state);
-        if (state_it != listeners.end()) {
-            state_it->second.erase(eventType);
-        }
+void
+EventManager::removeAllListeners(const StateID state,
+                                 sf::Event::EventType eventType)
+{
+    auto state_it = listeners.find(state);
+    if (state_it != listeners.end()) {
+        state_it->second.erase(eventType);
+    }
 }
 
 void

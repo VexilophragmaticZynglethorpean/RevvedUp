@@ -3,14 +3,15 @@
 
 #include "Core/IState.h"
 
-class PauseState : public State {
-private:
+class PauseState : public State
+{
+  private:
     sf::RectangleShape overlay;
     sf::Text pauseText;
     sf::Text instructionsText;
     sf::Font font;
-  
-public:
+
+  public:
     PauseState();
 
     void init() override;
@@ -21,4 +22,3 @@ public:
 };
 
 #endif // PAUSESTATE_H
-

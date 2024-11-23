@@ -6,10 +6,10 @@
 
 enum class FontID
 {
-  TITLE,
-  TEXT,
-  FANCY,
-  FONT_COUNT
+    TITLE,
+    TEXT,
+    FANCY,
+    FONT_COUNT
 };
 
 class FontManager
@@ -28,4 +28,3 @@ class FontManager
 };
 
 #endif // FONT_MANAGER_H
-

@@ -1,28 +1,17 @@
-#include <SFML/Graphics.hpp>
-#include "Core/WindowManager.h"
 #include "Core/EventManager.h"
 #include "Core/StateManager.h"
+#include "Core/WindowManager.h"
 #include "States/MenuState.h"
-
-#ifdef DEV_PHASE
-#include <imgui-SFML.h>
-#include <imgui.h>
-#endif
+#include <SFML/Graphics.hpp>
 
 int
 main()
 {
     auto& window = WindowManager::getWindow();
-
-#ifdef DEV_PHASE
-    assert(ImGui::SFML::Init(window));
-#endif
-
     auto& stateManager = StateManager::getInstance();
     auto& eventManager = EventManager::getInstance();
     sf::Clock deltaClock;
 
-    WindowManager::getClock();
 
     stateManager.pushState(std::make_unique<MenuState>());
 
@@ -31,34 +20,14 @@ main()
 
         while (window.pollEvent(event)) {
             eventManager.handleEvent(stateManager.getCurrentStateID(), event);
-
-#ifdef DEV_PHASE
-            ImGui::SFML::ProcessEvent(window, event);
-#endif
         }
 
-#ifdef DEV_PHASE
-        ImGui::NewFrame();
-#endif
-
-        stateManager.update(deltaClock.getElapsedTime());
-        deltaClock.restart();
+        stateManager.update(deltaClock.restart());
 
         window.clear(sf::Color::Black);
-
         stateManager.render(window);
-
-#ifdef DEV_PHASE
-        ImGui::SFML::Render(window);
-        ImGui::EndFrame();
-#endif
-
         window.display();
     }
-
-#ifdef DEV_PHASE
-    ImGui::SFML::Shutdown();
-#endif
 
     return EXIT_SUCCESS;
 }

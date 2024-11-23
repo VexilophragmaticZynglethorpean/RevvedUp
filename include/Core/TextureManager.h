@@ -6,16 +6,16 @@
 #include <filesystem>
 #include <vector>
 
-    enum class TextureID
-    {
-        ATLAS0,
-        ATLAS1,
-        ATLAS2,
-        JEEP,
-        CAR0,
-        MENU_BACKGROUND,
-        TEXTURE_COUNT
-    };
+enum class TextureID
+{
+    ATLAS0,
+    ATLAS1,
+    ATLAS2,
+    GHOST,
+    CAR0,
+    MENU_BACKGROUND,
+    TEXTURE_COUNT
+};
 
 class TextureManager
 {

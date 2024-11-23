@@ -1,19 +1,21 @@
 #include "States/PauseState.h"
-#include "Core/SoundManager.h"
 #include "Core/EventManager.h"
-#include "Core/WindowManager.h"
+#include "Core/FontManager.h"
+#include "Core/SoundManager.h"
 #include "Core/StateManager.h"
 #include "Core/TextureManager.h"
-#include "Core/FontManager.h"
+#include "Core/WindowManager.h"
 #include <SFML/Graphics.hpp>
 #include <functional>
 
 PauseState::PauseState()
-: State(StateID::Pause)
+  : State(StateID::Pause)
 {
 }
 
-void PauseState::init() {
+void
+PauseState::init()
+{
     auto& eventManager = EventManager::getInstance();
     auto& soundManager = SoundManager::getInstance();
     auto windowSize = WindowManager::getWindow().getSize();
@@ -32,27 +34,41 @@ void PauseState::init() {
     pauseText.setCharacterSize(50);
     pauseText.setFillColor(sf::Color::White);
     auto localBounds = pauseText.getLocalBounds();
-    pauseText.setOrigin(localBounds.width/2.0f, localBounds.height/2.0f);
-    pauseText.setPosition(windowSize.x/2.0f, windowSize.y/2.0f);
+    pauseText.setOrigin(localBounds.width / 2.0f, localBounds.height / 2.0f);
+    pauseText.setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 
     instructionsText.setFont(textFont);
-    instructionsText.setString("Press Esc to unpause the game\nPress Ctrl+Esc to return to main menu");
+    instructionsText.setString(
+      "Press Esc to unpause the game\nPress Ctrl+Esc to return to main menu");
     instructionsText.setCharacterSize(15);
     instructionsText.setFillColor(sf::Color::White);
-    instructionsText.setPosition(0.0f, windowSize.y - instructionsText.getCharacterSize() * 2);
+    instructionsText.setPosition(
+      0.0f, windowSize.y - instructionsText.getCharacterSize() * 2);
     auto instructionsLocalBounds = instructionsText.getLocalBounds();
 
     eventManager.addListener(
-      StateID::Pause, sf::Event::KeyPressed, std::bind(&WindowManager::toggleFullScreen, std::placeholders::_1));
-    eventManager.addListener(StateID::Pause, sf::Event::KeyPressed, std::bind(&PauseState::handleEvents, this, std::placeholders::_1));
+      StateID::Pause,
+      sf::Event::KeyPressed,
+      std::bind(&WindowManager::toggleFullScreen, std::placeholders::_1));
+    eventManager.addListener(
+      StateID::Pause,
+      sf::Event::KeyPressed,
+      std::bind(&PauseState::handleEvents, this, std::placeholders::_1));
 
-    eventManager.addListener(StateID::Pause, sf::Event::Closed, std::bind(&PauseState::handleEvents, this, std::placeholders::_1));
+    eventManager.addListener(
+      StateID::Pause,
+      sf::Event::Closed,
+      std::bind(&PauseState::handleEvents, this, std::placeholders::_1));
 }
 
-void PauseState::update(const sf::Time& deltaTime) {
+void
+PauseState::update(const sf::Time& deltaTime)
+{
 }
 
-void PauseState::render(sf::RenderTarget& target) {
+void
+PauseState::render(sf::RenderTarget& target)
+{
     auto& snapshot = TextureManager::getInstance().getRenderTexture();
     sf::Sprite snapshotSprite(snapshot.getTexture());
     target.draw(snapshotSprite);
@@ -61,7 +77,9 @@ void PauseState::render(sf::RenderTarget& target) {
     target.draw(instructionsText);
 }
 
-void PauseState::exit() {
+void
+PauseState::exit()
+{
     auto& eventManager = EventManager::getInstance();
     auto& soundManager = SoundManager::getInstance();
 
@@ -72,7 +90,9 @@ void PauseState::exit() {
     soundManager.getMusic().play();
 }
 
-void PauseState::handleEvents(const sf::Event& event) {
+void
+PauseState::handleEvents(const sf::Event& event)
+{
     switch (event.type) {
         case sf::Event::KeyPressed:
             switch (event.key.code) {

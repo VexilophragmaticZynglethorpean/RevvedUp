@@ -4,15 +4,16 @@
 #include "Core/IState.h"
 #include <vector>
 
-class MenuState : public State {
-public:
+class MenuState : public State
+{
+  public:
     MenuState();
     void init() override;
     void update(const sf::Time& deltaTime) override;
     void render(sf::RenderTarget& target) override;
     void exit() override;
 
-private:
+  private:
     void handleEvents(const sf::Event& event) override;
     void handleButtonPress(int buttonIndex);
     void updateButtonStates(const sf::Vector2f& mousePos);

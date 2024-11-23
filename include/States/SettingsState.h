@@ -4,8 +4,9 @@
 #include "Core/IState.h"
 #include <SFML/Graphics.hpp>
 
-class SettingsState : public State {
-public:
+class SettingsState : public State
+{
+  public:
     SettingsState();
     void init() override;
     void update(const sf::Time& deltaTime) override;
@@ -14,7 +15,7 @@ public:
 
     static std::size_t readCurrentMap();
 
-private:
+  private:
     sf::Sprite background;
     sf::RectangleShape overlay;
     void handleEvents(const sf::Event& event) override;
@@ -26,4 +27,3 @@ private:
 };
 
 #endif // SETTINGSSTATE_H
-

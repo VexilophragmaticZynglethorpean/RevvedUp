@@ -2,9 +2,9 @@
 #define PLAYER_CAR_H
 
 #include <SFML/Graphics.hpp>
-#include "Components/ICar.h"
 
-class PlayerCar : public Car, public sf::Drawable
+class PlayerCar
+  : public sf::Drawable
 {
   private:
     bool forwardMovement;
@@ -12,19 +12,34 @@ class PlayerCar : public Car, public sf::Drawable
     bool leftMovement;
     bool rightMovement;
 
+  sf::Sprite sprite;
+    float forwardVelocity;
+    sf::Vector2f positionPercentage;
+
     void updateVelocity(const sf::Time& deltaTime);
     void updatePosition(const sf::Time& deltaTime);
 
     bool intersectsBoundaries(const sf::FloatRect& boundary);
 
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    virtual void draw(sf::RenderTarget& target,
+                      sf::RenderStates states) const override;
+
+    void resizeWithWindow(float newWindowWidth,
+                          float newWindowHeight,
+                          float initialScaleX,
+                          float initialScaleY);
 
   public:
     PlayerCar();
 
-    void init() override;
-    void update(const sf::Time& deltaTime) override;
+    void init();
+    void update(const sf::Time& deltaTime);
     void handleEvents(const sf::Event& event);
+
+    float getForwardVelocity() const;
+    sf::Vector2f getPositionPercentage() const;
+    float getWidthPercentage() const;
+    void setVelocity(float velocity);
 };
 
 #endif // PLAYER_CAR_H

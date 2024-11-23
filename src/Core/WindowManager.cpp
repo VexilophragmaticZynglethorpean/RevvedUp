@@ -23,30 +23,30 @@ WindowManager::getWindow()
 }
 
 void
-WindowManager::toggleFullScreen(const sf::Event& event) {
-    if (event.type != sf::Event::KeyPressed) return;
-    if (event.key.code != sf::Keyboard::F11) return;
+WindowManager::toggleFullScreen(const sf::Event& event)
+{
+    if (event.type != sf::Event::KeyPressed)
+        return;
+    if (event.key.code != sf::Keyboard::F11)
+        return;
 
     isFullScreen = !isFullScreen;
 
     sf::RenderWindow& window = getWindow();
     if (isFullScreen) {
         window.close();
-        window.create(sf::VideoMode::getFullscreenModes()[0], TITLE, sf::Style::Fullscreen);
+        window.create(
+          sf::VideoMode::getFullscreenModes()[0], TITLE, sf::Style::Fullscreen);
     } else {
         window.close();
         window.create(sf::VideoMode::getDesktopMode(), TITLE);
     }
 }
 
-void WindowManager::resizeWindow(const sf::Event& event) {
-  sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-  WindowManager::getWindow().setView(sf::View(visibleArea));
+void
+WindowManager::resizeWindow(const sf::Event& event)
+{
+    sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+    WindowManager::getWindow().setView(sf::View(visibleArea));
 }
 
-sf::Clock&
-WindowManager::getClock()
-{
-    static sf::Clock clock;
-    return clock;
-}

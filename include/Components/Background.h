@@ -1,23 +1,33 @@
 #ifndef BACKGROUND_H
 #define BACKGROUND_H
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 #include "Components/PlayerCar.h"
 #include "Core/TextureManager.h"
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
 
-class Background 
-  : public sf::Drawable
+class Background : public sf::Drawable
 {
-private:
-    struct Atlas {
+  private:
+    struct Atlas
+    {
         std::size_t tileWidth, tileHeight;
         std::size_t rows, cols;
         std::size_t frameCount;
         double frameDurationConstant;
 
-        Atlas(std::size_t cols = 0, std::size_t rows = 0, std::size_t frameCount = 0, double frameDurationConstant = 0.0)
-        : cols(cols), rows(rows), frameCount(frameCount), tileWidth(0), tileHeight(0), frameDurationConstant(frameDurationConstant) {}
+        Atlas(std::size_t cols = 0,
+              std::size_t rows = 0,
+              std::size_t frameCount = 0,
+              double frameDurationConstant = 0.0)
+          : cols(cols)
+          , rows(rows)
+          , frameCount(frameCount)
+          , tileWidth(0)
+          , tileHeight(0)
+          , frameDurationConstant(frameDurationConstant)
+        {
+        }
     };
 
     sf::Sprite sprite;
@@ -31,7 +41,7 @@ private:
     void incrementFrame();
     void decrementFrame();
 
-public:
+  public:
     void init();
     void update(const sf::Time& deltaTime, const PlayerCar& car);
     void handleEvents(const sf::Event& event);
@@ -43,4 +53,3 @@ public:
 };
 
 #endif // BACKGROUND_H
-

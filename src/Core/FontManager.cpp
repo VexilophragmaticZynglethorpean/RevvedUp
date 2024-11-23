@@ -1,8 +1,12 @@
 #include "Core/FontManager.h"
 
-FontManager::FontManager()  : fonts(static_cast<std::size_t>(FontID::FONT_COUNT)) {}
+FontManager::FontManager()
+  : fonts(static_cast<std::size_t>(FontID::FONT_COUNT))
+{
+}
 
-FontManager& FontManager::getInstance()
+FontManager&
+FontManager::getInstance()
 {
     static FontManager instance;
     return instance;

@@ -11,10 +11,9 @@ getWindow();
 void
 toggleFullScreen(const sf::Event& event);
 
-void resizeWindow(const sf::Event& event);
+void
+resizeWindow(const sf::Event& event);
 
-sf::Clock&
-getClock();
 } // namespace WindowManager
 
 #endif // WINDOW_MANAGER_H

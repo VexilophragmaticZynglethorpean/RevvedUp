@@ -1,12 +1,12 @@
 #ifndef STATE_MANAGER_H
 #define STATE_MANAGER_H
 
-#include <memory>
-#include <stack>
 #include "Core/IState.h"
 #include "Core/StateID.h"
 #include "SFML/Graphics/RenderTarget.hpp"
 #include <SFML/Graphics.hpp>
+#include <memory>
+#include <stack>
 
 class StateManager
 {
