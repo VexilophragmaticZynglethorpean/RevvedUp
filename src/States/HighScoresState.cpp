@@ -1,5 +1,9 @@
 #include "Util/Path.h"
 #include "Core/StateManager.h"
+#include "Core/EventManager.h"
+#include "Core/WindowManager.h"
+#include "Core/TextureManager.h"
+#include <fstream>
 
 #include "States/HighScoresState.h"
 
@@ -11,6 +15,16 @@ HighScoresState::HighScoresState()
 void HighScoresState::init() {
     auto& eventManager = EventManager::getInstance();
     auto windowSize = WindowManager::getWindow().getSize();
+
+    auto& textureManager = TextureManager::getInstance();
+    background.setTexture(textureManager.getTexture(TextureID::MENU_BACKGROUND));
+    background.setScale(
+        static_cast<float>(windowSize.x) / background.getTexture()->getSize().x,
+        static_cast<float>(windowSize.y) / background.getTexture()->getSize().y
+    );
+
+    overlay.setSize(sf::Vector2f(windowSize.x, windowSize.y));
+    overlay.setFillColor(sf::Color(0, 0, 0, 230));
 
     font.loadFromFile(Util::getExecutablePath() / "assets/Sans.ttf");
     highScoresText.setFont(font);
@@ -29,7 +43,8 @@ void HighScoresState::update(const sf::Time& deltaTime) {
 }
 
 void HighScoresState::render(sf::RenderTarget& target) {
-    target.clear(sf::Color::Black);
+    target.draw(background);
+    target.draw(overlay);
     target.draw(highScoresText);
 }
 

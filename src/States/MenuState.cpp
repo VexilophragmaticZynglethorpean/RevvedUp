@@ -25,7 +25,7 @@ void MenuState::init() {
     overlay.setFillColor(sf::Color(0, 0, 0, 230));
     
     auto& textureManager = TextureManager::getInstance();
-    textureManager.loadTexture(TextureID::MENU_BACKGROUND, Util::getExecutablePath() / "assets/menu_background.png");
+    textureManager.loadTexture(TextureID::MENU_BACKGROUND, Util::getExecutablePath() / "assets/menu_background.jpg");
     background.setTexture(textureManager.getTexture(TextureID::MENU_BACKGROUND));
     background.setScale(
         static_cast<float>(windowSize.x) / background.getTexture()->getSize().x,
@@ -56,7 +56,7 @@ void MenuState::init() {
 
         sf::RectangleShape buttonBackground;
         buttonBackground.setSize(sf::Vector2f(400, 60));
-        buttonBackground.setFillColor(sf::Color(100, 100, 100));
+        buttonBackground.setFillColor(sf::Color(0, 0, 0));
         buttonBackground.setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f + i * 66 + 5 );
         buttonBackground.setOrigin(buttonBackground.getSize().x / 2, buttonBackground.getSize().y / 2);
         buttonBackgrounds.push_back(buttonBackground);

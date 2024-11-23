@@ -2,11 +2,7 @@
 #define HOWTOPLAYSTATE_H
 
 #include "Core/IState.h"
-#include "Core/EventManager.h"
-#include "Core/WindowManager.h"
-#include "Core/TextureManager.h"
 #include <SFML/Graphics.hpp>
-#include <functional>
 
 class HowToPlayState : public State {
 public:
@@ -18,6 +14,8 @@ public:
 
 private:
     void handleEvents(const sf::Event& event) override;
+    sf::Sprite background;
+    sf::RectangleShape overlay;
     sf::Font font;
     sf::Text instructionsText;
 };

@@ -1,10 +1,12 @@
 #include "Components/Background.h"
 #include "Core/WindowManager.h"
 #include "Core/TextureManager.h"
+#include "States/SettingsState.h"
 
 constexpr std::size_t NO_OF_ATLASES = 3;
 
-Background::Background() : currentRow(0), currentCol(0), currentFrame(0), currentTime(0.0), atlases(3), currentTexture(TextureID::ATLAS0) {
+Background::Background() : currentRow(0), currentCol(0), currentFrame(0), currentTime(0.0), atlases(3) {
+    currentTexture = static_cast<TextureID>(SettingsState::readCurrentMap());
 }
 
 void Background::init() {
