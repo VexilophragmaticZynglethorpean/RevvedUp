@@ -35,7 +35,7 @@ class GhostSpawner
     float minX;
     float maxX;
     float fixedY;
-    sf::Clock spawnClock;
+    float spawnClock;
     float spawnInterval;
 };
 
