@@ -49,4 +49,3 @@ WindowManager::resizeWindow(const sf::Event& event)
     sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
     WindowManager::getWindow().setView(sf::View(visibleArea));
 }
-

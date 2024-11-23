@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(RevvedUp)
+project(RevvedUp LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,6 +9,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(SFML_BUILD_NETWORK "Build network" OFF)
+set(SFML_DIR "external/SFML")
 add_subdirectory(external/SFML)
 
 if(DEFINED DEV_PHASE)

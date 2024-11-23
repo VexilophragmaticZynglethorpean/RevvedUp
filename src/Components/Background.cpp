@@ -21,9 +21,9 @@ Background::init()
     atlases.at(static_cast<std::size_t>(TextureID::ATLAS0)) =
       Atlas(5, 11, 55, 100.0);
     atlases.at(static_cast<std::size_t>(TextureID::ATLAS1)) =
-      Atlas(4, 6, 23, 100.0);
+      Atlas(4, 6, 23, 500.0);
     atlases.at(static_cast<std::size_t>(TextureID::ATLAS2)) =
-      Atlas(4, 6, 23, 100.0);
+      Atlas(4, 6, 23, 50.0);
 
     changeAtlas(currentTexture);
 }
@@ -37,6 +37,7 @@ Background::update(const sf::Time& deltaTime, const PlayerCar& car)
 
     if (!car.getForwardVelocity() || !atlas.frameDurationConstant)
         return;
+
     auto frameDuration =
       atlas.frameDurationConstant / std::abs(car.getForwardVelocity());
 

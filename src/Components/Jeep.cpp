@@ -88,7 +88,8 @@
 /*    sprite.setScale(lerp(currentScale, fullScale, SCALE_SPEED * dt));*/
 /*    sprite.setRotation(lerp(0.0f, MAX_ROTATION, 0.2f * dt));*/
 /*    sprite.setColor(*/
-/*      sf::Color(255, 255, 255, static_cast<sf::Uint8>(terp(0, 255, 2 * dt))));*/
+/*      sf::Color(255, 255, 255, static_cast<sf::Uint8>(terp(0, 255, 2 *
+ * dt))));*/
 /*#ifdef DEV_PHASE*/
 /*    ImGui::Begin("JEEP");*/
 /*    ImGui::Text("Current scale %f %f", currentScale.x, currentScale.y);*/

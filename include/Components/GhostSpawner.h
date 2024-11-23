@@ -5,27 +5,32 @@
 #include <deque>
 #include <memory>
 
-class Ghost : public sf::Drawable {
-public:
+class Ghost : public sf::Drawable
+{
+  public:
     Ghost(float x, float y);
-  float lifetime;
+    float lifetime;
     sf::FloatRect getBounds() const;
-  void update(const sf::Time& deltaTime);
-  sf::Vector2f getPositionPercentage() const;
+    void update(const sf::Time& deltaTime);
+    sf::Vector2f getPositionPercentage() const;
 
-private:
+  private:
     sf::Sprite sprite;
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
-class GhostSpawner {
-public:
+class GhostSpawner
+{
+  public:
     GhostSpawner(float minX, float maxX, float fixedY);
-    void update(const sf::Time& deltaTime, const sf::Vector2f& carPosition, const float carWidthPercentage);
-    void spawnGhost(const sf::Vector2f& carPosition, const float carWidthPercentage);
+    void update(const sf::Time& deltaTime,
+                const sf::Vector2f& carPosition,
+                const float carWidthPercentage);
+    void spawnGhost(const sf::Vector2f& carPosition,
+                    const float carWidthPercentage);
     const std::deque<std::unique_ptr<Ghost>>& getGhosts() const;
 
-private:
+  private:
     std::deque<std::unique_ptr<Ghost>> ghosts;
     float minX;
     float maxX;
@@ -35,4 +40,3 @@ private:
 };
 
 #endif // GHOSTSPAWNER_H
-

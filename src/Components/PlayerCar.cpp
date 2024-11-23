@@ -24,28 +24,39 @@ PlayerCar::PlayerCar()
   , backwardMovement(false)
   , leftMovement(false)
   , rightMovement(false)
-     , forwardVelocity(0.0f)
-      , positionPercentage(sf::Vector2f(INITIAL_POSITION_X, INITIAL_POSITION_Y))
+  , forwardVelocity(0.0f)
+  , positionPercentage(sf::Vector2f(INITIAL_POSITION_X, INITIAL_POSITION_Y))
 {
 }
 
-    void PlayerCar::resizeWithWindow(float newWindowWidth,
-                          float newWindowHeight,
-                          float initialScaleX,
-                          float initialScaleY)
-    {
-        sprite.setScale(initialScaleX * static_cast<float>(newWindowWidth) /
-                          sprite.getTextureRect().getSize().x,
-                        initialScaleY * static_cast<float>(newWindowHeight) /
-                          sprite.getTextureRect().getSize().y);
-    }
+void
+PlayerCar::resizeWithWindow(float newWindowWidth,
+                            float newWindowHeight,
+                            float initialScaleX,
+                            float initialScaleY)
+{
+    sprite.setScale(initialScaleX * static_cast<float>(newWindowWidth) /
+                      sprite.getTextureRect().getSize().x,
+                    initialScaleY * static_cast<float>(newWindowHeight) /
+                      sprite.getTextureRect().getSize().y);
+}
 
-float PlayerCar::getForwardVelocity() const { return forwardVelocity; }
-void PlayerCar::setVelocity(float velocity) {
-        forwardVelocity = velocity;
-    }
+float
+PlayerCar::getForwardVelocity() const
+{
+    return forwardVelocity;
+}
+void
+PlayerCar::setVelocity(float velocity)
+{
+    forwardVelocity = velocity;
+}
 
-sf::Vector2f PlayerCar::getPositionPercentage() const { return positionPercentage; }
+sf::Vector2f
+PlayerCar::getPositionPercentage() const
+{
+    return positionPercentage;
+}
 
 void
 PlayerCar::handleEvents(const sf::Event& event)
@@ -161,7 +172,9 @@ PlayerCar::intersectsBoundaries(const sf::FloatRect& boundary)
     return false;
 }
 
-float PlayerCar::getWidthPercentage() const {
+float
+PlayerCar::getWidthPercentage() const
+{
     auto globalBounds = sprite.getGlobalBounds();
     return globalBounds.width / WindowManager::getWindow().getSize().x;
 }

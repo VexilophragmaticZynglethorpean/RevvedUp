@@ -52,7 +52,10 @@ GameOverState::init()
       std::bind(&GameOverState::handleEvents, this, std::placeholders::_1));
 }
 
-void GameOverState::update(const sf::Time& deltaTime) {}
+void
+GameOverState::update(const sf::Time& deltaTime)
+{
+}
 
 void
 GameOverState::render(sf::RenderTarget& target)

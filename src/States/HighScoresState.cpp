@@ -90,7 +90,8 @@ HighScoresState::handleEvents(const sf::Event& event)
     }
 }
 
-void HighScoresState::loadHighScores()
+void
+HighScoresState::loadHighScores()
 {
     std::ifstream file(Util::getExecutablePath() / "highscores.txt");
     std::string line;

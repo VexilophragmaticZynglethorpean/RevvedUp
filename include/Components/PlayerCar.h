@@ -3,8 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-class PlayerCar
-  : public sf::Drawable
+class PlayerCar : public sf::Drawable
 {
   private:
     bool forwardMovement;
@@ -12,7 +11,7 @@ class PlayerCar
     bool leftMovement;
     bool rightMovement;
 
-  sf::Sprite sprite;
+    sf::Sprite sprite;
     float forwardVelocity;
     sf::Vector2f positionPercentage;
 

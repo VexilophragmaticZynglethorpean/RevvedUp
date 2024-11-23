@@ -12,7 +12,6 @@ main()
     auto& eventManager = EventManager::getInstance();
     sf::Clock deltaClock;
 
-
     stateManager.pushState(std::make_unique<MenuState>());
 
     while (window.isOpen()) {

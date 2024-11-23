@@ -23,11 +23,7 @@ std::size_t
 SettingsState::readCurrentMap()
 {
     std::ifstream settingsFile(Util::getExecutablePath() / "settings.txt");
-
     std::string line;
-    std::getline(settingsFile, line);
-    if (line != "# Version: 1.0")
-        return 0;
 
     if (settingsFile.is_open()) {
         if (std::getline(settingsFile, line)) {
@@ -45,7 +41,6 @@ SettingsState::saveCurrentMap()
     std::ofstream settingsFile(Util::getExecutablePath() / "settings.txt",
                                std::ios::out | std::ios::trunc);
     if (settingsFile.is_open()) {
-        settingsFile << "# Version: 1.0\n";
         settingsFile << currentMap;
         settingsFile.close();
     }

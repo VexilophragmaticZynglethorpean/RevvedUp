@@ -1,20 +1,20 @@
 #include "States/PlayState.h"
 #include "Core/EventManager.h"
+#include "Core/FontManager.h"
 #include "Core/SoundManager.h"
 #include "Core/StateManager.h"
-#include "Core/FontManager.h"
 #include "Core/TextureManager.h"
 #include "Core/WindowManager.h"
 #include "States/GameOverState.h"
 #include "States/PauseState.h"
 #include "Util/Path.h"
 #include <cstdlib>
+#include <fstream>
 #include <functional>
 #include <memory>
-#include <fstream>
 
 namespace {
- float DISTANCE_TO_WIN = 1000;
+float DISTANCE_TO_WIN = 1000;
 float DISTANCE_CONST = 100;
 float GHOST_ABOVE_THRESHOLD = 0.6f;
 }
@@ -23,18 +23,19 @@ PlayState::PlayState()
   : State(StateID::Play)
   , car()
   , background()
-    , distanceCovered(0.0f)
-, ghostSpawner(0.1f, 0.9f, 0.6f)
+  , distanceCovered(0.0f)
+  , ghostSpawner(0.1f, 0.9f, 0.6f)
 {
     gameClock.restart();
 
     auto& textFont = FontManager::getInstance().getFont(FontID::TEXT);
-    
+
     timeText.setFont(textFont);
     timeText.setCharacterSize(20);
     timeText.setFillColor(sf::Color::White);
     sf::Vector2u windowSize = WindowManager::getWindow().getSize();
-    timeText.setPosition(0.05f * windowSize.x, 0.05f * windowSize.y); // 5% padding from top left
+    timeText.setPosition(0.05f * windowSize.x,
+                         0.05f * windowSize.y); // 5% padding from top left
 
     distanceText.setFont(textFont);
     distanceText.setCharacterSize(20);
@@ -129,7 +130,8 @@ PlayState::update(const sf::Time& deltaTime)
 {
     car.update(deltaTime);
     background.update(deltaTime, car);
-ghostSpawner.update(deltaTime, car.getPositionPercentage(), car.getWidthPercentage()); 
+    ghostSpawner.update(
+      deltaTime, car.getPositionPercentage(), car.getWidthPercentage());
 
     bool ghostDetected = false;
 
@@ -139,8 +141,7 @@ ghostSpawner.update(deltaTime, car.getPositionPercentage(), car.getWidthPercenta
 
         if (ghostPosition.x >= carPosition.x - car.getWidthPercentage() / 6 &&
             ghostPosition.x <= carPosition.x + car.getWidthPercentage() / 6 &&
-            ghostPosition.y < carPosition.y) 
-        {
+            ghostPosition.y < carPosition.y) {
             ghostDetected = true;
             break;
         }
@@ -150,30 +151,36 @@ ghostSpawner.update(deltaTime, car.getPositionPercentage(), car.getWidthPercenta
         if (!isGhostAbove) {
             isGhostAbove = true;
             ghostAboveTimer.restart();
-        } else if (ghostAboveTimer.getElapsedTime().asSeconds() >= GHOST_ABOVE_THRESHOLD) {
+        } else if (ghostAboveTimer.getElapsedTime().asSeconds() >=
+                   GHOST_ABOVE_THRESHOLD) {
             car.setVelocity(-3 * car.getForwardVelocity());
         }
     } else {
         isGhostAbove = false;
     }
 
-
     sf::Time elapsedTime = gameClock.getElapsedTime();
     int minutes = static_cast<int>(elapsedTime.asSeconds()) / 60;
     int seconds = static_cast<int>(elapsedTime.asSeconds()) % 60;
 
-    if (car.getForwardVelocity() > 0) {
-        distanceCovered += static_cast<int>(deltaTime.asSeconds() * DISTANCE_CONST);
-        if (distanceCovered >= DISTANCE_TO_WIN) {
-            snapshot(TextureManager::getInstance().getRenderTexture());
-            StateManager::getInstance().pushState(
-              std::make_unique<GameOverState>());
-        }
+    float sign;
+    if (car.getForwardVelocity() > 0) sign = +1;
+    if (car.getForwardVelocity() < 0) sign = -3;
+    if (car.getForwardVelocity() == 0) sign = 0;
+    distanceCovered += sign * 
+      deltaTime.asSeconds() * DISTANCE_CONST;
+
+    if (distanceCovered >= DISTANCE_TO_WIN) {
+        snapshot(TextureManager::getInstance().getRenderTexture());
+        StateManager::getInstance().pushState(
+          std::make_unique<GameOverState>());
     }
 
-    timeText.setString("Time: " + std::to_string(minutes) + ":" + std::to_string(seconds));
+    timeText.setString("Time: " + std::to_string(minutes) + ":" +
+                       std::to_string(seconds));
     float remainingDistance = DISTANCE_TO_WIN - distanceCovered;
-    distanceText.setString("Distance Remaining: " + std::to_string(remainingDistance) + " m");
+    distanceText.setString(
+      "Distance Remaining: " + std::to_string(static_cast<int>(remainingDistance)) + " m");
 }
 
 void
@@ -181,7 +188,7 @@ PlayState::render(sf::RenderTarget& target)
 {
     target.draw(background);
     target.draw(car);
-    
+
     for (const auto& ghost : ghostSpawner.getGhosts()) {
         target.draw(*ghost);
     }
@@ -225,12 +232,19 @@ PlayState::handleEvents(const sf::Event& event)
 void
 PlayState::exit()
 {
-    std::ofstream file(Util::getExecutablePath() / "highscores.txt", std::ios::app);
+    auto& eventManager = EventManager::getInstance();
+    eventManager.removeAllListeners(StateID::Play, sf::Event::KeyPressed);
+    eventManager.removeAllListeners(StateID::Play, sf::Event::Resized);
+    eventManager.removeAllListeners(StateID::Play, sf::Event::Closed);
+
+    std::ofstream file(Util::getExecutablePath() / "highscores.txt",
+                       std::ios::app);
     if (file.is_open()) {
         sf::Time elapsedTime = gameClock.getElapsedTime();
         int minutes = static_cast<int>(elapsedTime.asSeconds()) / 60;
         int seconds = static_cast<int>(elapsedTime.asSeconds()) % 60;
-        file << "Time: " << minutes << ":" << (seconds < 10 ? "0" : "") << seconds << "\n";
+        file << "Time: " << minutes << ":" << (seconds < 10 ? "0" : "")
+             << seconds << "\n";
         file.close();
     }
 }
