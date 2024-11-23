@@ -11,7 +11,7 @@ void HowToPlayState::init() {
     auto& eventManager = EventManager::getInstance();
     auto windowSize = WindowManager::getWindow().getSize();
 
-    font.loadFromFile(Util::getExecutablePath() / "assets/SuperchargeHalftone.otf");
+    font.loadFromFile(Util::getExecutablePath() / "assets/Sans.ttf");
 
     instructionsText.setFont(font);
     instructionsText.setString("Instructions:\n\nUse arrow keys to move.\nAvoid obstacles.\nPress ESC to return to menu.");

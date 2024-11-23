@@ -17,12 +17,15 @@ private:
     void handleButtonPress(int buttonIndex);
     void updateButtonStates(const sf::Vector2f& mousePos);
 
+    sf::Sprite background;
     sf::RectangleShape overlay;
     sf::Font font;
+    sf::Text title;
     std::vector<sf::Text> buttons;
     std::vector<sf::RectangleShape> buttonBackgrounds;
     sf::Color defaultColor;
     sf::Color hoverColor;
+    int selectedButtonIndex;
 };
 
 #endif // MENUSTATE_H

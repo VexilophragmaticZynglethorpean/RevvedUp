@@ -11,7 +11,7 @@ void SettingsState::init() {
     auto& eventManager = EventManager::getInstance();
     auto windowSize = WindowManager::getWindow().getSize();
 
-    font.loadFromFile(Util::getExecutablePath() / "assets/SuperchargeHalftone.otf");
+    font.loadFromFile(Util::getExecutablePath() / "assets/Sans.ttf");
 
     settingsText.setFont(font);
     settingsText.setString("Settings:\n\nAdjust your game settings here.\nPress ESC to return to menu.");

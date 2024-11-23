@@ -13,6 +13,7 @@
         ATLAS2,
         JEEP,
         CAR0,
+        MENU_BACKGROUND,
         TEXTURE_COUNT
     };
 

@@ -12,7 +12,7 @@ void HighScoresState::init() {
     auto& eventManager = EventManager::getInstance();
     auto windowSize = WindowManager::getWindow().getSize();
 
-    font.loadFromFile(Util::getExecutablePath() / "assets/SuperchargeHalftone.otf");
+    font.loadFromFile(Util::getExecutablePath() / "assets/Sans.ttf");
     highScoresText.setFont(font);
     highScoresText.setCharacterSize(30);
     highScoresText.setFillColor(sf::Color::White);
