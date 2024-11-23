@@ -13,6 +13,7 @@ enum class SoundID {
     TWO,
     ONE,
     GO,
+    HOVER,
     SOUND_COUNT
 };
 

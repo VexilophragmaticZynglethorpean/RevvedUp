@@ -1,5 +1,6 @@
 #include "States/MenuState.h"
 #include "Core/FontManager.h"
+#include "Core/SoundManager.h"
 #include "Core/TextureManager.h"
 #include "States/PlayState.h"
 #include "States/HowToPlayState.h"
@@ -26,6 +27,10 @@ void MenuState::init() {
     overlay.setFillColor(sf::Color(0, 0, 0, 230));
     
     auto& textureManager = TextureManager::getInstance();
+    auto& soundManager = SoundManager::getInstance();
+    auto& fontManager = FontManager::getInstance();
+
+
     textureManager.loadTexture(TextureID::MENU_BACKGROUND, Util::getExecutablePath() / "assets/menu_background.jpg");
     background.setTexture(textureManager.getTexture(TextureID::MENU_BACKGROUND));
     background.setScale(
@@ -33,11 +38,13 @@ void MenuState::init() {
         static_cast<float>(windowSize.y) / background.getTexture()->getSize().y
     );
 
-    FontManager::getInstance().loadFont( FontID::TITLE, Util::getExecutablePath() / "assets/PreschoolBits.ttf");
-    FontManager::getInstance().loadFont( FontID::TEXT, Util::getExecutablePath() / "assets/Sans.ttf");
-    FontManager::getInstance().loadFont( FontID::FANCY, Util::getExecutablePath() / "assets/SuperchargeHalftone.otf");
+    soundManager.loadSound(SoundID::THREE, Util::getExecutablePath() / "assets/three.ogg");
 
-    auto& font = FontManager::getInstance().getFont(FontID::TITLE);
+    fontManager.loadFont( FontID::TITLE, Util::getExecutablePath() / "assets/PreschoolBits.ttf");
+    fontManager.loadFont( FontID::TEXT, Util::getExecutablePath() / "assets/Sans.ttf");
+    fontManager.loadFont( FontID::FANCY, Util::getExecutablePath() / "assets/SuperchargeHalftone.otf");
+
+    auto& font = fontManager.getFont(FontID::TITLE);
     title.setFont(font);
     title.setString("Race");
     title.setCharacterSize(120);

@@ -25,6 +25,7 @@ void PauseState::init() {
     overlay.setFillColor(sf::Color(0, 0, 0, 230));
 
     auto& font = FontManager::getInstance().getFont(FontID::FANCY);
+    auto& textFont = FontManager::getInstance().getFont(FontID::TEXT);
 
     pauseText.setFont(font);
     pauseText.setString("PAUSED");
@@ -34,14 +35,12 @@ void PauseState::init() {
     pauseText.setOrigin(localBounds.width/2.0f, localBounds.height/2.0f);
     pauseText.setPosition(windowSize.x/2.0f, windowSize.y/2.0f);
 
-    instructionsText.setFont(font);
+    instructionsText.setFont(textFont);
     instructionsText.setString("Press Esc to unpause the game\nPress Ctrl+Esc to return to main menu");
-    instructionsText.setCharacterSize(30);
+    instructionsText.setCharacterSize(15);
     instructionsText.setFillColor(sf::Color::White);
-    instructionsText.setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f + 60);
+    instructionsText.setPosition(0.0f, windowSize.y - instructionsText.getCharacterSize() * 2);
     auto instructionsLocalBounds = instructionsText.getLocalBounds();
-    instructionsText.setOrigin(instructionsLocalBounds.width / 2.0f, instructionsLocalBounds.height / 2.0f);
-
 
     eventManager.addListener(
       StateID::Pause, sf::Event::KeyPressed, std::bind(&WindowManager::toggleFullScreen, std::placeholders::_1));
