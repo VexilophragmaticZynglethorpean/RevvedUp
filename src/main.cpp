@@ -35,7 +35,6 @@ main()
 #ifdef DEV_PHASE
             ImGui::SFML::ProcessEvent(window, event);
 #endif
-
         }
 
 #ifdef DEV_PHASE

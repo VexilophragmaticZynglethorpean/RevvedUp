@@ -5,6 +5,7 @@
 #include "Core/SoundManager.h"
 #include "States/PlayState.h"
 #include "States/PauseState.h"
+#include "States/GameOverState.h"
 #include "Util/Path.h"
 #include <functional>
 #include <cstdlib>
@@ -93,7 +94,7 @@ PlayState::update(const sf::Time& deltaTime)
 {
     car.update(deltaTime);
     background.update(deltaTime, car);
-    /*traffic.update(deltaTime);*/
+    traffic.update(deltaTime);
 }
 
 void
@@ -101,7 +102,7 @@ PlayState::render(sf::RenderTarget& target)
 {
     target.draw(background);
     target.draw(car);
-    /*traffic.draw(target);*/
+    traffic.draw(target);
 }
 
 void PlayState::snapshot(sf::RenderTexture& renderTexture) {

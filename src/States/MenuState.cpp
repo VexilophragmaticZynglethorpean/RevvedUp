@@ -38,7 +38,7 @@ void MenuState::init() {
         static_cast<float>(windowSize.y) / background.getTexture()->getSize().y
     );
 
-    soundManager.loadSound(SoundID::THREE, Util::getExecutablePath() / "assets/three.ogg");
+    soundManager.loadSound(SoundID::HOVER, Util::getExecutablePath() / "assets/hover.ogg");
 
     fontManager.loadFont( FontID::TITLE, Util::getExecutablePath() / "assets/PreschoolBits.ttf");
     fontManager.loadFont( FontID::TEXT, Util::getExecutablePath() / "assets/Sans.ttf");
@@ -50,7 +50,7 @@ void MenuState::init() {
     title.setCharacterSize(120);
     title.setFillColor(defaultColor);
     title.setPosition(windowSize.x / 2.0f, windowSize.y / 4.0f);
-    title.setOrigin(title.getLocalBounds().width / 2, title.getLocalBounds().height / 2);
+    title.setOrigin(title.getLocalBounds().width / 2.0f, title.getLocalBounds().height / 2.0f);
 
     std::vector<std::string> buttonLabels = {"Play", "How to Play", "High Scores", "Settings"};
     for (size_t i = 0; i < buttonLabels.size(); ++i) {
@@ -60,14 +60,14 @@ void MenuState::init() {
         buttonText.setCharacterSize(40);
         buttonText.setFillColor(defaultColor);
         buttonText.setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f + i * 65);
-        buttonText.setOrigin(buttonText.getLocalBounds().width / 2, buttonText.getLocalBounds().height / 2);
+        buttonText.setOrigin(buttonText.getLocalBounds().width / 2.0f, buttonText.getLocalBounds().height / 2.0f);
         buttons.push_back(buttonText);
 
         sf::RectangleShape buttonBackground;
         buttonBackground.setSize(sf::Vector2f(400, 60));
         buttonBackground.setFillColor(sf::Color(0, 0, 0));
         buttonBackground.setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f + i * 66 + 5 );
-        buttonBackground.setOrigin(buttonBackground.getSize().x / 2, buttonBackground.getSize().y / 2);
+        buttonBackground.setOrigin(buttonBackground.getSize().x / 2.0f, buttonBackground.getSize().y / 2.0f);
         buttonBackgrounds.push_back(buttonBackground);
     }
 
@@ -107,14 +107,13 @@ void MenuState::handleEvents(const sf::Event& event) {
         case sf::Event::KeyPressed:
             if (event.key.code == sf::Keyboard::Escape) {
                 WindowManager::getWindow().close();
-            } else if (event.key.code == sf::Keyboard::Up) {
-                // Move selection up
+            } else if (event.key.code == sf::Keyboard::Up){
+                SoundManager::getInstance().playSound(SoundID::HOVER);
                 selectedButtonIndex = (selectedButtonIndex > 0) ? selectedButtonIndex - 1 : buttons.size() - 1;
             } else if (event.key.code == sf::Keyboard::Down) {
-                // Move selection down
+                SoundManager::getInstance().playSound(SoundID::HOVER);
                 selectedButtonIndex = (selectedButtonIndex + 1) % buttons.size();
             } else if (event.key.code == sf::Keyboard::Enter) {
-                // Select the currently highlighted button
                 handleButtonPress(selectedButtonIndex);
             }
             break;
@@ -137,18 +136,19 @@ void MenuState::handleEvents(const sf::Event& event) {
 }
 
 void MenuState::handleButtonPress(int buttonIndex) {
+    auto& stateManager = StateManager::getInstance();
     switch (buttonIndex) {
-        case 0: // Play
-            StateManager::getInstance().pushState(std::make_unique<PlayState>());
+        case 0:
+            stateManager.pushState(std::make_unique<PlayState>());
             break;
-        case 1: // How to Play
-            StateManager::getInstance().pushState(std::make_unique<HowToPlayState>());
+        case 1:
+            stateManager.pushState(std::make_unique<HowToPlayState>());
             break;
-        case 2: // High Scores
-            StateManager::getInstance().pushState(std::make_unique<HighScoresState>());
+        case 2:
+            stateManager.pushState(std::make_unique<HighScoresState>());
             break;
-        case 3: // Settings
-            StateManager::getInstance().pushState(std::make_unique<SettingsState>());
+        case 3:
+            stateManager.pushState(std::make_unique<SettingsState>());
             break;
         default:
             break;
@@ -157,14 +157,13 @@ void MenuState::handleButtonPress(int buttonIndex) {
 
 void MenuState::updateButtonStates(const sf::Vector2f& mousePos) {
     for (size_t i = 0; i < buttonBackgrounds.size(); ++i) {
-        // Check if the mouse is over the button or if it's the selected button
         if (buttonBackgrounds[i].getGlobalBounds().contains(mousePos)) {
             buttons[i].setFillColor(hoverColor);
-            selectedButtonIndex = i; // Update selected index based on mouse hover
+            selectedButtonIndex = i;
         } else if (i == selectedButtonIndex) {
-            buttons[i].setFillColor(hoverColor); // Highlight the selected button
+            buttons[i].setFillColor(hoverColor);
         } else {
-            buttons[i].setFillColor(defaultColor); // Default color for unselected buttons
+            buttons[i].setFillColor(defaultColor);
         }
     }
 }

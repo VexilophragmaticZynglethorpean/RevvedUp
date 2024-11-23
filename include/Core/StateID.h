@@ -11,7 +11,8 @@ enum class StateID
     Menu,
     HowToPlay,
     HighScores,
-    Settings
+    Settings,
+    GameOver
 };
 
 struct StateHash
