@@ -2,21 +2,24 @@
 #define JEEP_H
 
 #include "Components/ICar.h"
-#include "SFML/System/Vector2.hpp"
+#include "Components/PlayerCar.h"
 
 class Jeep : public Car, public sf::Drawable {
 public:
-    Jeep(sf::Vector2f spawnPoint = sf::Vector2f(0.0f, 0.0f), sf::Vector2f endPosition = sf::Vector2f(0.0f, 0.0f), sf::Vector2f fullScale = sf::Vector2f(1.0f, 1.0f));
+    Jeep(sf::Vector2f spawnPoint, sf::Vector2f endPosition, float forwardVelocity, sf::Vector2f fullScale);
 
     void init() override;
+    void updateCarInfo(const PlayerCar& car);
     void update(const sf::Time& deltaTime) override;
 
 private:
-    sf::Vector2f spawnPoint;
     sf::Vector2f endPosition;
     sf::Vector2f fullScale;
+    float dt;
 
     sf::Vector2f lerp(const sf::Vector2f& start, const sf::Vector2f& end, float t);
+    float lerp(float start, float end, float t);
+    float terp(float start, float end, float t);
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 };

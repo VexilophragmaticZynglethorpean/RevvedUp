@@ -66,26 +66,6 @@ void PlayerCar::update(const sf::Time& deltaTime)
 {
     updateVelocity(deltaTime);
     updatePosition(deltaTime);
-
-#ifdef DEV_PHASE
-    ImGui::Begin("Debug");
-    ImGui::Text("%f %f", positionPercentage.x ,positionPercentage.y);
-    /*ImGui::DragFloat("ox", &o_x, 0.001f);*/
-    /*ImGui::DragFloat("oy", &o_y, 0.001f);*/
-    /*if(ImGui::Button("click"))*/
-    /*    sprite.setOrigin(o_x, o_y);*/
-    /*if(ImGui::Button("reset"))*/
-    /*    sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height);*/
-    /*ImGui::DragFloat("angle", &rot_x, 0.001f);*/
-    /*sprite.setRotation(rot_x);*/
-    /*ImGui::DragFloat("X", &INITIAL_SCALE_X, 0.001f);*/
-    /*ImGui::DragFloat("Y", &INITIAL_SCALE_Y, 0.001f);*/
-    /*sprite.setScale(*/
-    /*    INITIAL_SCALE_X * static_cast<float>(WindowManager::getWindow().getSize().x) / sprite.getTextureRect().getSize().x,*/
-    /*    INITIAL_SCALE_Y * static_cast<float>(WindowManager::getWindow().getSize().y) / sprite.getTextureRect().getSize().y*/
-    /*);*/
-    ImGui::End();
-#endif
 }
 
 void PlayerCar::updateVelocity(const sf::Time& deltaTime)

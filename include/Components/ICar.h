@@ -7,9 +7,7 @@
 class Car
 {
   protected:
-
     float forwardVelocity;
-
     sf::Vector2f positionPercentage;
 
   public:
@@ -26,7 +24,6 @@ void resizeWithWindow(float newWindowWidth, float newWindowHeight, float initial
             initialScaleY * static_cast<float>(newWindowHeight) / sprite.getTextureRect().getSize().y
         );
 }
-
 
     float getForwardVelocity() const {
         return forwardVelocity;

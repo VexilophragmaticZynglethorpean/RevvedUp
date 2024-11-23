@@ -87,8 +87,7 @@ PlayState::init()
 
     soundManager.getMusic().play();
 
-    /*Jeep(sf::Vector2f spawnPoint = sf::Vector2f(0.0f, 0.0f), sf::Vector2f endPosition = sf::Vector2f(0.0f, 0.0f), sf::Vector2f fullScale = sf::Vector2f(0.0f, 0.0f));*/
-    Jeep jeep(sf::Vector2f(0,0), sf::Vector2f(800.0f, 800.0f), sf::Vector2f(2.0, 2.0));
+    Jeep jeep(sf::Vector2f(0.51,0.56), sf::Vector2f(0.0f, 1.0f), 5.0f, sf::Vector2f(2.5, 2.5));
     jeep.init();
     traffic.push_back(std::move(jeep));
 }
@@ -100,33 +99,9 @@ PlayState::update(const sf::Time& deltaTime)
     background.update(deltaTime, car);
 
     for (auto& jeep : traffic) {
+        jeep.updateCarInfo(car);
         jeep.update(deltaTime);
     }
-    
-        /*ImGui::Begin("Transform Controls");*/
-        /**/
-        /*// Scale controls*/
-        /*ImGui::Text("Scale");*/
-        /*ImGui::SliderFloat("Scale X", &scale.x, 0.1f, 5.0f);*/
-        /*ImGui::SliderFloat("Scale Y", &scale.y, 0.1f, 5.0f);*/
-        /**/
-        /*// Position controls*/
-        /*ImGui::Text("Position");*/
-        /*ImGui::SliderFloat("Position X", &position.x, 0.0f, WindowManager::getWindow().getSize().x);*/
-        /*ImGui::SliderFloat("Position Y", &position.y, 0.0f, WindowManager::getWindow().getSize().y);*/
-        /**/
-        /*// Rotation controls*/
-        /*ImGui::Text("Rotation");*/
-        /*ImGui::SliderFloat("Rotation", &rotation, 0.0f, 360.0f);*/
-        /**/
-        /*ImGui::End();*/
-
-    traffic.at(0).
-        sprite.setScale(scale);
-    traffic.at(0).
-        sprite.setPosition(position);
-    traffic.at(0).
-        sprite.setRotation(rotation);
 }
 
 void
