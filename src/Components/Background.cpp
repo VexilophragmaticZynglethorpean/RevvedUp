@@ -19,11 +19,11 @@ void
 Background::init()
 {
     atlases.at(static_cast<std::size_t>(TextureID::ATLAS0)) =
-      Atlas(5, 11, 55, 100.0);
-    atlases.at(static_cast<std::size_t>(TextureID::ATLAS1)) =
       Atlas(4, 6, 23, 500.0);
-    atlases.at(static_cast<std::size_t>(TextureID::ATLAS2)) =
+    atlases.at(static_cast<std::size_t>(TextureID::ATLAS1)) =
       Atlas(4, 6, 23, 50.0);
+    atlases.at(static_cast<std::size_t>(TextureID::ATLAS2)) =
+      Atlas(5, 11, 55, 100.0);
 
     changeAtlas(currentTexture);
 }
